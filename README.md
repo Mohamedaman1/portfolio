@@ -69,10 +69,17 @@ On the first visit of a browser session the home page opens with a dot sequence:
 dots gather into a figure, hold, then burst outward as the site opens. Any click or key skips it,
 and it is disabled under `prefers-reduced-motion`.
 
-**To use Mohamed's real photo:** save it as `src/assets/portrait.webp` (or `.jpg` / `.jpeg` / `.png`).
-Nothing else needs editing — the intro then builds the portrait out of dots (a halftone sampled from
-the photo) and the Intro / About sections show it. A front-facing photo with a plain or dark
-background reads best. Until the file exists the intro forms the `MA` monogram.
+**Mohamed's media lives in `src/assets/`** and is picked up by filename (see `src/lib/portrait.ts`):
+
+| File | Used for |
+| --- | --- |
+| `portrait.webp` | Intro and About portrait (4:5 crop of the studio photo) |
+| `portrait-intro.webp` | Tighter head-and-shoulders crop, shadows lifted, that the intro builds out of dots |
+| `signature.webp` | Handwritten signature, white ink on transparent (intro, Intro, About, footer) |
+| `illustration.webp`, `candid.webp` | "Off the record" strip on the About page |
+
+Replace a file with the same name to swap it. If a file is removed, the site falls back to a
+labelled placeholder (portrait, signature) or leaves the block out.
 
 ## Motion and navigation
 
@@ -81,17 +88,14 @@ background reads best. Until the file exists the intro forms the `MA` monogram.
 - A floating chapter rail shows `03 / 07` with `↑ ↓` arrows to turn chapters, plus a scroll-progress line.
 - Sections reveal on scroll, numbers count up, chapter numerals drift (CSS scroll timelines where supported).
 
-## Media still needed (placeholders are in place)
+## Media still needed
 
 | Asset | Put it at | Then |
 | --- | --- | --- |
-| Real portrait | `src/assets/portrait.webp` | nothing — it is picked up automatically (intro + Intro/About) |
-| Real handwritten signature | `public/media/mohamed-signature.svg` | swap the typographic stand-in in `components/portfolio/Signature.tsx` |
 | Dahsha / ZezeWigs / Prestige visuals | `public/media/<slug>/` | replace `ProjectArt` in the case-study hero and gallery |
 | Other approved client art, clips | `public/media/projects/<slug>/` | same |
 
-The portrait, signature and all project art are clearly labelled placeholders — none is presented
-as authentic. Review public-use permission for each client name before publishing.
+Project art is clearly labelled placeholder artwork — none of it is presented as a real ad. Review public-use permission for each client name before publishing.
 
 ## Network controls
 

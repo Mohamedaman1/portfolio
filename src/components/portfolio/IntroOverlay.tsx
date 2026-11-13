@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { profile } from '../../data/portfolio';
-import { portraitUrl } from '../../lib/portrait';
+import { introPortraitUrl } from '../../lib/portrait';
+import Signature from './Signature';
 
 interface Dot {
   sx: number;
@@ -37,12 +38,12 @@ async function sampleFigure(cols: number): Promise<{ cols: number; rows: number;
   const g = c.getContext('2d', { willReadFrequently: true })!;
   g.fillStyle = '#000';
   g.fillRect(0, 0, cols, rows);
-  const img = portraitUrl ? await loadImage(portraitUrl) : null;
+  const img = introPortraitUrl ? await loadImage(introPortraitUrl) : null;
   if (img) {
     const s = Math.max(cols / img.width, rows / img.height);
     const w = img.width * s;
     const h = img.height * s;
-    g.filter = 'grayscale(1) contrast(1.25) brightness(1.1)';
+    g.filter = 'grayscale(1) contrast(1.3) brightness(0.98)';
     g.drawImage(img, (cols - w) / 2, (rows - h) * 0.3, w, h);
   } else {
     await Promise.race([
@@ -99,13 +100,13 @@ export default function IntroOverlay({ onDone }: { onDone(): void }) {
       const dpr = Math.min(2, window.devicePixelRatio || 1);
       canvas.width = w * dpr;
       canvas.height = h * dpr;
-      const figH = Math.min(h * 0.6, w * 0.9 * 1.25, 600);
-      const cols = w < 720 ? 56 : 84;
+      const figH = Math.min(h * 0.74, w * 0.92 * 1.25, 760);
+      const cols = w < 720 ? 72 : 112;
       const fig = await sampleFigure(cols);
       if (dead) return;
       const cell = figH / fig.rows;
       const ox = w / 2 - (fig.cols * cell) / 2;
-      const oy = h * 0.46 - figH / 2;
+      const oy = h * 0.47 - figH / 2;
       let seed = 7;
       const rnd = () => {
         seed = (seed * 16807) % 2147483647;
@@ -115,7 +116,7 @@ export default function IntroOverlay({ onDone }: { onDone(): void }) {
       for (let y = 0; y < fig.rows; y++) {
         for (let x = 0; x < fig.cols; x++) {
           const l = fig.cells[y * fig.cols + x];
-          if (l < 0.13) continue;
+          if (l < 0.06) continue;
           const tx = ox + (x + 0.5) * cell;
           const ty = oy + (y + 0.5) * cell;
           const a = Math.atan2(ty - h / 2, tx - w / 2) + (rnd() - 0.5) * 0.9;
@@ -125,7 +126,7 @@ export default function IntroOverlay({ onDone }: { onDone(): void }) {
             sy: rnd() * h,
             tx,
             ty,
-            r: Math.max(0.5, cell * 0.46 * Math.pow(l, 0.8)),
+            r: Math.max(0.4, cell * 0.56 * Math.pow(l, 1.15)),
             delay: rnd() * 0.45,
             vx: Math.cos(a) * speed,
             vy: Math.sin(a) * speed,
@@ -211,6 +212,9 @@ export default function IntroOverlay({ onDone }: { onDone(): void }) {
   return (
     <div className={`intro-overlay${leaving ? ' is-leaving' : ''}`} role="presentation">
       <canvas ref={canvasRef} aria-hidden="true" />
+      <div className="intro-overlay__sig">
+        <Signature />
+      </div>
       <div className="intro-overlay__bar">
         <p className="micro">
           {profile.name} <span aria-hidden="true">/</span> {profile.edition}

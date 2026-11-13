@@ -5,7 +5,7 @@ export default function Portrait() {
   if (portraitUrl) {
     return (
       <div className="portrait portrait--photo">
-        <img src={portraitUrl} alt="Mohamed Aman" loading="lazy" />
+        <img src={portraitUrl} alt="Mohamed Aman in a black suit and black shirt, against a black background" width="800" height="1000" />
       </div>
     );
   }

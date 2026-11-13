@@ -1,10 +1,15 @@
 import { profile } from '../../data/portfolio';
+import { signatureUrl } from '../../lib/portrait';
 
-/**
- * Typographic stand-in. Replace with the real handwriting asset at /media/mohamed-signature.svg
- * (see README) — this is NOT Mohamed's authentic signature.
- */
+/** Mohamed's handwritten signature (`src/assets/signature.*`), or a labelled typographic stand-in without it. */
 export default function Signature() {
+  if (signatureUrl) {
+    return (
+      <p className="signature">
+        <img className="signature__img" src={signatureUrl} alt={`${profile.name} — signature`} width="1005" height="236" loading="lazy" />
+      </p>
+    );
+  }
   return (
     <p className="signature" title="Typographic placeholder — the real handwritten signature will replace this">
       <span className="signature__ink">{profile.name}</span>

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import Portrait from '../components/portfolio/Portrait';
 import Signature from '../components/portfolio/Signature';
 import { expertise, hubs, profile } from '../data/portfolio';
+import { candidUrl, illustrationUrl } from '../lib/portrait';
 
 export default function About() {
   return (
@@ -33,6 +34,29 @@ export default function About() {
           <Signature />
         </div>
       </div>
+
+      {(illustrationUrl || candidUrl) && (
+        <section className="chapter chapter--flush">
+          <h2>Off the record</h2>
+          <div className="sides">
+            {illustrationUrl && (
+              <figure className="rv">
+                <img src={illustrationUrl} alt="Illustrated portrait of Mohamed Aman in round sunglasses" loading="lazy" width="800" height="1096" />
+                <figcaption className="micro">The illustrated version</figcaption>
+              </figure>
+            )}
+            {candidUrl && (
+              <figure className="rv">
+                <img src={candidUrl} alt="Mohamed Aman in sunglasses, smiling and giving a thumbs up" loading="lazy" width="1000" height="1333" />
+                <figcaption className="micro">Between campaigns</figcaption>
+              </figure>
+            )}
+            <p className="lede">
+              Serious about the numbers, relaxed about everything else. Good marketing is made by people — it helps to be one.
+            </p>
+          </div>
+        </section>
+      )}
 
       <section className="chapter chapter--flush">
         <h2>How the work is approached</h2>
