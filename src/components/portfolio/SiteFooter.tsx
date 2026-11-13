@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { profile } from '../../data/portfolio';
+import { contactLinks, profile } from '../../data/portfolio';
 import Signature from './Signature';
 
 export default function SiteFooter() {
@@ -17,6 +17,11 @@ export default function SiteFooter() {
         <Link to="/work">Work</Link>
         <Link to="/about">About</Link>
         <Link to="/contact">Contact</Link>
+        {contactLinks.map((l) => (
+          <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer">
+            {l.label} ↗
+          </a>
+        ))}
       </nav>
       <Signature />
     </footer>

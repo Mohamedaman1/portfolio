@@ -22,9 +22,9 @@ export interface Hub {
 export const hubs: Hub[] = [
   {
     id: 'ecommerce',
-    label: 'Premium E-commerce',
+    label: 'E-commerce & Stores',
     summary:
-      'Premium Saudi and GCC storefronts where acquisition, creative and the path to purchase are treated as one system.',
+      'Online stores on Salla, Zid and Shopify — where acquisition, creative, storefront UX and the path to purchase are run as one system. More than $2M in store sales generated across this work.',
   },
   {
     id: 'performance',
@@ -123,8 +123,6 @@ export interface Project {
   related?: string[];
   /** Order in the featured case-study list (stories only). */
   featured?: number;
-  /** Pin a small thumbnail card to this node in the network. */
-  thumbnail?: boolean;
   /** Approved, publishable results. Leave empty until Mohamed signs off. */
   results?: string[];
 }
@@ -160,7 +158,6 @@ export const projects: Project[] = [
     ],
     skills: ['creative-strategy', 'storefront-ux', 'whatsapp-journey'],
     accent: '#3F74C4',
-    thumbnail: true,
   },
   {
     slug: 'zezewigs',
@@ -189,7 +186,6 @@ export const projects: Project[] = [
     ],
     skills: ['creative-strategy', 'storefront-ux', 'seo-structure'],
     accent: '#E08DB0',
-    thumbnail: true,
   },
   {
     slug: 'prestige-wigs',
@@ -218,7 +214,6 @@ export const projects: Project[] = [
     ],
     skills: ['storefront-ux', 'reporting', 'creative-strategy'],
     accent: '#CDB592',
-    thumbnail: true,
   },
   {
     slug: 'rayah',
@@ -619,7 +614,17 @@ export const featuredStories = projects
   .sort((a, b) => (a.featured ?? 99) - (b.featured ?? 99));
 export const brands = projects.filter((p) => p.kind === 'brand');
 export const concepts = projects.filter((p) => p.kind === 'concept');
-export const miniCardSlugs = ['dahsha', 'zezewigs', 'prestige-wigs'];
+/** Practice areas featured beside the network. Stores come first; brands are examples, not the headline. */
+export const featuredAreas: { hub: HubId; title: string; meta: string; accent: string }[] = [
+  {
+    hub: 'ecommerce',
+    title: 'E-commerce & Stores',
+    meta: 'Salla · Zid · Shopify storefronts — KSA / GCC',
+    accent: '#B8A17A',
+  },
+  { hub: 'performance', title: 'Performance Marketing', meta: 'Meta · TikTok · Snapchat media buying', accent: '#8E8A82' },
+  { hub: 'systems', title: 'Systems & AI', meta: 'Sales, planning and order workflows', accent: '#8E8A82' },
+];
 
 export interface Chapter {
   n: string;
@@ -652,7 +657,24 @@ export const profile = {
   contactArabic: 'البزنس جاهز؟',
 };
 
+/**
+ * Headline proof, stated by Mohamed: more than $2M in store sales generated across the
+ * e-commerce work, combined across stores and engagements (not a single brand or period).
+ */
+export const headlineProof = {
+  prefix: '$',
+  value: 2,
+  suffix: 'M+',
+  label: 'in store sales generated',
+  detail: 'Combined across the e-commerce stores managed — spread over brands and engagements, not a single store.',
+};
+
 export const expertise = [
+  {
+    title: 'E-commerce Growth',
+    body: 'Growing online stores end to end — the offer, the traffic, the storefront and the follow-up.',
+    items: ['Store growth strategy', 'Salla / Zid / Shopify UX', 'WhatsApp Journey', 'SEO URL Structure'],
+  },
   {
     title: 'Performance Marketing',
     body: 'Paid social planning and media buying for e-commerce and local services.',
@@ -664,11 +686,6 @@ export const expertise = [
     items: ['Creative Strategy', 'Brand Identity', 'Video Campaign Direction', 'Content Strategy'],
   },
   {
-    title: 'Commerce UX',
-    body: 'Storefront decisions made with the ad click and the checkout in mind.',
-    items: ['Salla / Zid / Shopify UX', 'Mobile hero and product journey', 'WhatsApp Journey', 'SEO URL Structure'],
-  },
-  {
     title: 'Systems & Operations',
     body: 'The workflows around the campaign: planning, hand-offs and reporting.',
     items: ['AI Workflow Design', 'Sales workflow architecture', 'Reporting', 'Visual Merchandising'],
@@ -676,10 +693,12 @@ export const expertise = [
 ];
 
 /**
- * Verified contact links. Leave EMPTY until Mohamed supplies real details.
- * Example: { label: 'Email', value: 'name@example.com', href: 'mailto:name@example.com' }
+ * Verified contact links, supplied by Mohamed. Plain outbound links — nothing is integrated.
  */
-export const contactLinks: { label: string; value: string; href: string }[] = [];
+export const contactLinks: { label: string; value: string; href: string }[] = [
+  { label: 'WhatsApp', value: '+20 127 154 3918', href: 'https://wa.me/201271543918' },
+  { label: 'LinkedIn', value: 'linkedin.com/in/mohamedamanr', href: 'https://www.linkedin.com/in/mohamedamanr/' },
+];
 
 /**
  * UNPUBLISHED proof data. Not rendered anywhere while `approvedForPublication` is false.

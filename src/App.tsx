@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Route, Routes, useLocation, useNavigationType } from 'react-router-dom';
 import IndexOverlay from './components/portfolio/IndexOverlay';
+import IntroOverlay from './components/portfolio/IntroOverlay';
+import { useScrollReveal } from './lib/useScrollReveal';
 import PortfolioHeader from './components/portfolio/PortfolioHeader';
 import SiteFooter from './components/portfolio/SiteFooter';
 import About from './pages/About';
@@ -37,18 +39,42 @@ export default function App() {
   const [indexOpen, setIndexOpen] = useState(false);
   const { pathname, hash } = useLocation();
   useEffect(() => setIndexOpen(false), [pathname, hash]);
+  useScrollReveal(pathname);
+
+  // The opening sequence plays once per browser session, on the home page only.
+  const [intro, setIntro] = useState(() => {
+    try {
+      return (
+        pathname === '/' &&
+        !hash &&
+        !sessionStorage.getItem('ma-intro') &&
+        !matchMedia('(prefers-reduced-motion: reduce)').matches
+      );
+    } catch {
+      return false;
+    }
+  });
+  const endIntro = useCallback(() => {
+    try {
+      sessionStorage.setItem('ma-intro', '1');
+    } catch {
+      /* private mode: just play it again next time */
+    }
+    setIntro(false);
+  }, []);
 
   return (
     <>
       <a className="skip" href="#main">
         Skip to content
       </a>
+      {intro && <IntroOverlay onDone={endIntro} />}
       <ScrollManager />
       <PortfolioHeader indexOpen={indexOpen} onToggleIndex={() => setIndexOpen((v) => !v)} />
       <IndexOverlay open={indexOpen} onClose={() => setIndexOpen(false)} />
       <main id="main">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home introDone={!intro} />} />
           <Route path="/work" element={<WorkIndex />} />
           <Route path="/work/:slug" element={<WorkDetail />} />
           <Route path="/about" element={<About />} />

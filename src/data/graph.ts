@@ -14,7 +14,7 @@ export const HUB_LAYOUT: Record<Orientation, { w: number; h: number; hubs: Recor
     w: 1400,
     h: 1020,
     hubs: {
-      ecommerce: { x: 320, y: 300, r: 8 },
+      ecommerce: { x: 320, y: 300, r: 10 },
       performance: { x: 830, y: 215, r: 7.5 },
       about: { x: 650, y: 520, r: 5.5 },
       healthcare: { x: 1150, y: 430, r: 6.5 },
@@ -27,7 +27,7 @@ export const HUB_LAYOUT: Record<Orientation, { w: number; h: number; hubs: Recor
     w: 1000,
     h: 1560,
     hubs: {
-      ecommerce: { x: 290, y: 270, r: 8 },
+      ecommerce: { x: 290, y: 270, r: 10 },
       performance: { x: 730, y: 350, r: 7.5 },
       about: { x: 500, y: 660, r: 5.5 },
       creative: { x: 240, y: 900, r: 6.5 },

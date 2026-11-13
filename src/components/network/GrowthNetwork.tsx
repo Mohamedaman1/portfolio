@@ -1,7 +1,7 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import type { Orientation } from '../../data/graph';
-import { hubs, miniCardSlugs, profile, projectBySlug } from '../../data/portfolio';
-import { buildGraph, hubNodeId, projectNodeId } from '../../lib/networkLayout';
+import { headlineProof, hubs, profile } from '../../data/portfolio';
+import { buildGraph, hubNodeId } from '../../lib/networkLayout';
 import AccessibleNodeIndex from './AccessibleNodeIndex';
 import { describeNode } from './describe';
 import NetworkCanvas, { type NetworkHandle } from './NetworkCanvas';
@@ -15,6 +15,8 @@ export interface GrowthNetworkHandle {
 interface Props {
   selectedId: string | null;
   onSelect(id: string | null): void;
+  /** False while the opening intro is still covering the page. */
+  active: boolean;
 }
 
 function useReducedMotion() {
@@ -30,7 +32,7 @@ function useReducedMotion() {
   return reduced;
 }
 
-const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetwork({ selectedId, onSelect }, ref) {
+const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetwork({ selectedId, onSelect, active }, ref) {
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<NetworkHandle>(null);
   const [orientation, setOrientation] = useState<Orientation>('landscape');
@@ -79,7 +81,14 @@ const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetw
   );
   const closeList = useCallback(() => setListOpen(false), []);
 
-  const chipIds = [...hubs.map((h) => hubNodeId(h.id)), ...miniCardSlugs.map(projectNodeId)];
+  const hubIds = hubs.map((h) => hubNodeId(h.id));
+  const hubAt = selectedId ? hubIds.indexOf(selectedId) : -1;
+  /** Turn the camera to the previous / next hub. */
+  const turn = (dir: number) => {
+    const next = hubAt < 0 ? (dir > 0 ? 0 : hubIds.length - 1) : (hubAt + dir + hubIds.length) % hubIds.length;
+    selectAndFocus(hubIds[next]);
+  };
+  const pad = (n: number) => String(n).padStart(2, '0');
 
   return (
     <section className="network" aria-label="The growth network">
@@ -91,6 +100,7 @@ const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetw
             selectedId={selectedId}
             onSelect={selectFromCanvas}
             reducedMotion={reducedMotion}
+            active={active}
             insetRight={compact ? 0 : 340}
             insetBottom={compact ? 220 : 0}
           />
@@ -103,6 +113,26 @@ const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetw
             {profile.name} <span aria-hidden="true">/</span> {profile.edition}
           </p>
           <p className="network__tagline">{profile.tagline}</p>
+          <p className="network__proof">
+            <strong>
+              {headlineProof.prefix}
+              {headlineProof.value}
+              {headlineProof.suffix}
+            </strong>{' '}
+            {headlineProof.label}
+          </p>
+          <div className="stepper" role="group" aria-label="Turn between hubs">
+            <button type="button" onClick={() => turn(-1)} aria-label="Previous hub">
+              ←
+            </button>
+            <p className="micro" aria-live="polite">
+              <span className="gold">{hubAt >= 0 ? pad(hubAt + 1) : '––'}</span> / {pad(hubIds.length)}
+              <span className="stepper__label">{hubAt >= 0 ? hubs[hubAt].label : 'Turn through the hubs'}</span>
+            </p>
+            <button type="button" onClick={() => turn(1)} aria-label="Next hub">
+              →
+            </button>
+          </div>
         </div>
 
         <NetworkInspector detail={detail} onSelect={selectAndFocus} />
@@ -145,10 +175,8 @@ const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetw
       </div>
 
       <nav className="network__chips" aria-label="Jump to a hub or featured project">
-        {chipIds.map((id) => {
-          const label = id.startsWith('hub:')
-            ? hubs.find((h) => hubNodeId(h.id) === id)!.label
-            : projectBySlug.get(id.slice(8))!.name;
+        {hubIds.map((id, i) => {
+          const label = hubs[i].label;
           return (
             <button
               key={id}

@@ -27,6 +27,8 @@ interface Props {
   selectedId: string | null;
   onSelect(id: string | null): void;
   reducedMotion: boolean;
+  /** The reveal animation waits until this is true (e.g. while the opening intro plays). */
+  active: boolean;
   /** Screen area covered by the inspector while something is selected. */
   insetRight: number;
   insetBottom: number;
@@ -46,17 +48,17 @@ const KIND_LABEL: Record<GraphNode['kind'], string> = {
 };
 
 const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
-  { graph, selectedId, onSelect, reducedMotion, insetRight, insetBottom },
+  { graph, selectedId, onSelect, reducedMotion, active, insetRight, insetBottom },
   ref,
 ) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const tipRef = useRef<HTMLDivElement>(null);
   const api = useRef<NetworkHandle | null>(null);
-  const live = useRef({ selectedId, onSelect, reducedMotion, insetRight, insetBottom });
+  const live = useRef({ selectedId, onSelect, reducedMotion, active, insetRight, insetBottom });
 
   useEffect(() => {
-    live.current = { selectedId, onSelect, reducedMotion, insetRight, insetBottom };
+    live.current = { selectedId, onSelect, reducedMotion, active, insetRight, insetBottom };
   });
 
   useImperativeHandle(
@@ -97,13 +99,13 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
     let hover = -1;
     let raf = 0;
     let onScreen = true;
-    const start = performance.now();
+    let start = performance.now();
     const pointers = new Map<number, { x: number; y: number }>();
     let drag: { x: number; y: number; cx: number; cy: number; moved: boolean } | null = null;
     let pinch: { d: number; mx: number; my: number; cam: Camera } | null = null;
 
     const pad = (): Padding =>
-      vp.w < 720 ? { t: 56, r: 6, b: 50, l: 6 } : { t: 64, r: 24, b: 52, l: 24 };
+      vp.w < 720 ? { t: 138, r: 6, b: 50, l: 6 } : { t: 64, r: 24, b: 52, l: 24 };
     const rs = () => clamp(Math.sqrt(cam.k / 0.72), 0.72, 1.5);
     const setCam = (c: Camera) => {
       cam = clampPan(c, vp, world);
@@ -146,6 +148,7 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
       raf = requestAnimationFrame(frame);
       if (!fitted) return;
       const reduced = live.current.reducedMotion;
+      if (!live.current.active) start = now;
       const t = (now - start) / 1000;
       const reveal = reduced ? 2 : t / 1.5;
 
@@ -305,31 +308,6 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
             ctx.strokeStyle = `rgba(${GOLD},0.7)`;
             ctx.lineWidth = 1;
             ctx.stroke();
-          }
-          if (n.thumbnail) {
-            // tiny editorial preview card pinned to a real brand node
-            const w = 34 * scale;
-            const h = 22 * scale;
-            const tx = n.labelLeft ? x - 10 * scale - w : x + 10 * scale;
-            const ty = y - h - 8 * scale;
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(n.labelLeft ? tx + w : tx, ty + h);
-            ctx.strokeStyle = `rgba(${PEARL},0.3)`;
-            ctx.lineWidth = 0.6;
-            ctx.stroke();
-            ctx.fillStyle = '#0d0d0d';
-            ctx.fillRect(tx, ty, w, h);
-            const g = ctx.createLinearGradient(tx, ty + h, tx + w, ty);
-            g.addColorStop(0, 'rgba(0,0,0,0)');
-            g.addColorStop(1, n.accent ?? '#888');
-            ctx.fillStyle = g;
-            ctx.globalAlpha *= 0.8;
-            ctx.fillRect(tx, ty, w, h);
-            ctx.globalAlpha = nodeAlpha * (dim ? 0.3 : 1);
-            ctx.strokeStyle = isActive ? `rgb(${GOLD})` : `rgba(${PEARL},0.45)`;
-            ctx.lineWidth = 1;
-            ctx.strokeRect(tx + 0.5, ty + 0.5, w - 1, h - 1);
           }
         }
 

@@ -49,20 +49,43 @@ the list view, `/work` and gets its own `/work/<slug>` page. Nothing is duplicat
 **Add a featured case study** — add a project with `kind: 'story'`, a `featured` order and
 `related` slugs. It appears as a small card node between the work it describes.
 
-**Add contact details** — fill `contactLinks` in `portfolio.ts` with verified links only, e.g.
-`{ label: 'Email', value: 'name@example.com', href: 'mailto:name@example.com' }`. While it is
-empty the contact page says details are not yet published. There is no contact form.
+**Contact details** — `contactLinks` in `portfolio.ts` holds the WhatsApp and LinkedIn links.
+They are plain outbound links; there is no contact form and nothing is sent anywhere.
 
-**Publish results** — add approved lines to a project's `results` array; they render in the case
-study's Results section. The July 2026 combined-sales snapshot is kept in `draftProof`
+**Headline figure** — `headlineProof` in `portfolio.ts` drives the `$2M+` shown in the Impact
+chapter, the lead practice-area card and the marquee. It is a combined total across stores.
+
+**Practice-area cards** — `featuredAreas` in `portfolio.ts`. E-commerce & Stores leads; brands
+appear as examples inside the network and case studies, not as headline cards.
+
+**Publish per-project results** — add approved lines to a project's `results` array; they render in
+the case study's Results section. The July 2026 per-brand snapshot is kept in `draftProof`
 (unpublished, not rendered, not shipped in the bundle). If it is ever shown it must carry its
 caveat: combined brand sales, not paid-media-attributed revenue.
+
+## Opening intro and the portrait
+
+On the first visit of a browser session the home page opens with a dot sequence: scattered network
+dots gather into a figure, hold, then burst outward as the site opens. Any click or key skips it,
+and it is disabled under `prefers-reduced-motion`.
+
+**To use Mohamed's real photo:** save it as `src/assets/portrait.webp` (or `.jpg` / `.jpeg` / `.png`).
+Nothing else needs editing — the intro then builds the portrait out of dots (a halftone sampled from
+the photo) and the Intro / About sections show it. A front-facing photo with a plain or dark
+background reads best. Until the file exists the intro forms the `MA` monogram.
+
+## Motion and navigation
+
+- Hub stepper (`← 01 / 07 →`) in the network turns the camera from hub to hub.
+- Featured case studies are a snap carousel with arrow buttons, arrow keys and a counter.
+- A floating chapter rail shows `03 / 07` with `↑ ↓` arrows to turn chapters, plus a scroll-progress line.
+- Sections reveal on scroll, numbers count up, chapter numerals drift (CSS scroll timelines where supported).
 
 ## Media still needed (placeholders are in place)
 
 | Asset | Put it at | Then |
 | --- | --- | --- |
-| Real portrait | `public/media/mohamed-portrait.webp` | swap the placeholder in `components/portfolio/Portrait.tsx` for an `<img>` |
+| Real portrait | `src/assets/portrait.webp` | nothing — it is picked up automatically (intro + Intro/About) |
 | Real handwritten signature | `public/media/mohamed-signature.svg` | swap the typographic stand-in in `components/portfolio/Signature.tsx` |
 | Dahsha / ZezeWigs / Prestige visuals | `public/media/<slug>/` | replace `ProjectArt` in the case-study hero and gallery |
 | Other approved client art, clips | `public/media/projects/<slug>/` | same |

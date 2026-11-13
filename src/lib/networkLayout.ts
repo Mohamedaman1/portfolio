@@ -109,9 +109,8 @@ export function buildGraph(orientation: Orientation): Graph {
       label: p.name,
       x: primary.x + Math.cos(angle) * rad,
       y: primary.y + Math.sin(angle) * rad,
-      r: p.thumbnail ? 4.6 : 3.8,
+      r: 3.8,
       accent: p.accent,
-      thumbnail: p.thumbnail,
       decorative: false,
     });
     p.hubs.forEach((h, n) => link(i, index.get(hubNodeId(h))!, n === 0 ? 2 : 3));

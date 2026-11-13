@@ -17,19 +17,20 @@ export default function Contact() {
         <ul className="rows rows--static">
           {contactLinks.map((l) => (
             <li key={l.label}>
-              <a href={l.href}>
+              <a href={l.href} target="_blank" rel="noopener noreferrer">
                 <span className="rows__name">{l.label}</span>
                 <span className="rows__desc">{l.value}</span>
+                <span className="status">Open ↗</span>
               </a>
             </li>
           ))}
         </ul>
       ) : (
         <p className="note">
-          Direct contact details will be listed here once they are confirmed for publication. This portfolio has no contact form
-          and sends nothing to any service.
+          Direct contact details will be listed here once they are confirmed for publication.
         </p>
       )}
+      <p className="note">These are plain links. This portfolio has no contact form and sends nothing to any service.</p>
       <div className="page__cta">
         <Link className="btn" to="/work">
           See the work <span aria-hidden="true">→</span>

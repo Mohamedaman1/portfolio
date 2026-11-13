@@ -1,5 +1,4 @@
 import { mulberry32 } from '../../lib/networkLayout';
-import type { Project } from '../../data/portfolio';
 
 function hash(s: string) {
   let h = 2166136261;
@@ -11,7 +10,9 @@ function hash(s: string) {
  * Original placeholder art for a project: a small seeded constellation in the brand's own colour.
  * It stands in for real campaign media and is never presented as a real ad.
  */
-export default function ProjectArt({ project, label = false }: { project: Project; label?: boolean }) {
+type ArtSource = { slug: string; name: string; accent: string };
+
+export default function ProjectArt({ project, label = false }: { project: ArtSource; label?: boolean }) {
   const rng = mulberry32(hash(project.slug));
   const cx = 110 + rng() * 180;
   const cy = 90 + rng() * 120;
@@ -21,7 +22,7 @@ export default function ProjectArt({ project, label = false }: { project: Projec
     return { x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r, s: 1 + rng() * 2.2 };
   });
   const initials = project.name
-    .replace(/[^A-Za-z ]/g, '')
+    .replace(/[^A-Za-z ]/g, ' ')
     .split(' ')
     .filter(Boolean)
     .slice(0, 2)

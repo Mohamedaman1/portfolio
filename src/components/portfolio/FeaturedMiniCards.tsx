@@ -1,5 +1,5 @@
-import { miniCardSlugs, projectBySlug } from '../../data/portfolio';
-import { projectNodeId } from '../../lib/networkLayout';
+import { featuredAreas, headlineProof } from '../../data/portfolio';
+import { hubNodeId } from '../../lib/networkLayout';
 import ProjectArt from './ProjectArt';
 
 interface Props {
@@ -7,15 +7,14 @@ interface Props {
   onPick(id: string): void;
 }
 
-/** Compact editorial cards. Each one selects and focuses its real node in the network. */
+/** Practice-area cards. Each one selects and focuses its real hub in the network. */
 export default function FeaturedMiniCards({ selectedId, onPick }: Props) {
   return (
     <ul className="mini-cards">
-      {miniCardSlugs.map((slug, i) => {
-        const p = projectBySlug.get(slug)!;
-        const id = projectNodeId(slug);
+      {featuredAreas.map((a, i) => {
+        const id = hubNodeId(a.hub);
         return (
-          <li key={slug}>
+          <li key={a.hub}>
             <button
               type="button"
               className={`mini-card${i === 0 ? ' mini-card--lead' : ''}${selectedId === id ? ' is-active' : ''}`}
@@ -23,13 +22,21 @@ export default function FeaturedMiniCards({ selectedId, onPick }: Props) {
               onClick={() => onPick(id)}
             >
               <span className="mini-card__art">
-                <ProjectArt project={p} />
+                <ProjectArt project={{ slug: `area-${a.hub}`, name: a.title, accent: a.accent }} />
+                {i === 0 && (
+                  <span className="mini-card__stat">
+                    <strong>
+                      {headlineProof.prefix}
+                      {headlineProof.value}
+                      {headlineProof.suffix}
+                    </strong>
+                    <span>{headlineProof.label}</span>
+                  </span>
+                )}
               </span>
               <span className="mini-card__text">
-                <span className="mini-card__name">{p.name}</span>
-                <span className="mini-card__meta">
-                  {p.market} · {p.sector}
-                </span>
+                <span className="mini-card__name">{a.title}</span>
+                <span className="mini-card__meta">{a.meta}</span>
               </span>
             </button>
           </li>
