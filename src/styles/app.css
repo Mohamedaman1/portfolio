@@ -3065,3 +3065,273 @@ h3 {
   color: inherit;
   max-width: none;
 }
+
+/* ═════════════ v5 — highlights, per-hub fact, written signature, faces ═════════════ */
+.hl {
+  color: var(--text);
+  font-weight: 500;
+  background: linear-gradient(rgba(184, 161, 122, 0.42), rgba(184, 161, 122, 0.42)) no-repeat 0 92% / 0% 0.42em;
+  transition: background-size 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.25s;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding: 0 0.08em;
+}
+.hl.is-in {
+  background-size: 100% 0.42em;
+}
+.lede .hl,
+.jpanel__body .hl {
+  color: #fff;
+}
+
+/* the caption fact changes with the hub being visited */
+.network__proof {
+  animation: fact-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes fact-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* signature writes itself */
+.signature--real {
+  position: relative;
+  display: inline-block;
+}
+.signature--real .signature__img {
+  -webkit-mask: linear-gradient(90deg, #000 0 48%, transparent 56%) 100% 0 / 230% 100% no-repeat;
+  mask: linear-gradient(90deg, #000 0 48%, transparent 56%) 100% 0 / 230% 100% no-repeat;
+  transition: -webkit-mask-position 2.4s cubic-bezier(0.45, 0.05, 0.3, 1) 0.2s, mask-position 2.4s cubic-bezier(0.45, 0.05, 0.3, 1) 0.2s;
+}
+.signature--real.is-written .signature__img {
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
+}
+.signature__pen {
+  position: absolute;
+  left: 0;
+  top: 46%;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 12px 3px rgba(184, 161, 122, 0.7);
+  opacity: 0;
+}
+.signature--real.is-written .signature__pen {
+  animation: pen 2.4s cubic-bezier(0.45, 0.05, 0.3, 1) 0.2s both;
+}
+@keyframes pen {
+  0% {
+    left: 0;
+    opacity: 1;
+    transform: translateY(8px);
+  }
+  20% {
+    transform: translateY(-14px);
+  }
+  40% {
+    transform: translateY(10px);
+  }
+  60% {
+    transform: translateY(-16px);
+  }
+  80% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+    transform: translateY(0);
+  }
+}
+
+/* expertise columns: numbered, with capability pills */
+.columns {
+  counter-reset: col;
+}
+.columns article {
+  position: relative;
+  counter-increment: col;
+  padding: 20px 18px 20px;
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--gold);
+  background: var(--panel);
+  gap: 12px;
+}
+.columns article::before {
+  content: counter(col, decimal-leading-zero);
+  font: 500 11px var(--font-mono);
+  letter-spacing: 0.14em;
+  color: var(--gold);
+}
+.columns h3 {
+  font-size: 24px;
+}
+.columns p {
+  font-size: 15.5px;
+}
+.columns ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+.columns li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 11px;
+  border: 1px solid var(--border-strong);
+  font-size: 11.5px;
+  color: var(--text);
+}
+.columns li::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+.principles article {
+  padding-top: 18px;
+  border-top: 2px solid var(--gold);
+}
+.principles h3 {
+  font-size: 22px;
+}
+
+/* faces on the contact page */
+.contact__head {
+  position: relative;
+}
+.contact__faces {
+  position: absolute;
+  right: 0;
+  top: 8px;
+  width: clamp(220px, 26vw, 360px);
+  aspect-ratio: 1 / 1.05;
+}
+.face {
+  position: absolute;
+  margin: 0;
+  padding: 8px 8px 0;
+  background: var(--panel-elevated);
+  border: 1px solid var(--border-strong);
+  transition: transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.face img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+}
+.face--back {
+  left: 0;
+  top: 0;
+  width: 58%;
+  padding-bottom: 8px;
+  transform: rotate(-7deg);
+  animation: face-in-l 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.3s both;
+}
+.face--front {
+  right: 0;
+  bottom: 0;
+  width: 66%;
+  transform: rotate(4deg);
+  animation: face-in-r 1s cubic-bezier(0.2, 0.7, 0.2, 1) 0.5s both;
+}
+.face figcaption {
+  padding: 8px 2px 9px;
+  font-size: 9.5px;
+  color: var(--text);
+}
+.contact__faces:hover .face--back {
+  transform: rotate(-11deg) translate(-8px, -6px);
+}
+.contact__faces:hover .face--front {
+  transform: rotate(7deg) translate(6px, 4px);
+}
+@keyframes face-in-l {
+  from {
+    opacity: 0;
+    transform: rotate(-20deg) translate(-40px, 40px);
+  }
+}
+@keyframes face-in-r {
+  from {
+    opacity: 0;
+    transform: rotate(16deg) translate(40px, 50px);
+  }
+}
+.chat__avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: 55% 22%;
+  border: 1px solid var(--gold);
+}
+@media (max-width: 1024px) {
+  .contact__faces {
+    position: relative;
+    top: 0;
+    margin: 6px 0 0 auto;
+    width: min(78%, 320px);
+  }
+}
+@media (max-width: 720px) {
+  .jpanel__stat {
+    display: none;
+  }
+  .columns,
+  .principles {
+    gap: 16px;
+  }
+  .contact__faces {
+    margin-inline: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hl {
+    background-size: 100% 0.42em;
+  }
+  .signature--real .signature__img {
+    -webkit-mask: none;
+    mask: none;
+  }
+  .signature__pen {
+    display: none;
+  }
+}
+
+.inspector .hl {
+  background-size: 100% 0.42em;
+}
+.face img {
+  height: auto;
+}
+@media (max-width: 1024px) {
+  .network__caption .micro:first-child,
+  .network__proof {
+    display: table;
+    padding: 2px 8px 2px 0;
+    background: rgba(2, 2, 2, 0.82);
+    box-shadow: -14px 0 0 rgba(2, 2, 2, 0.82);
+  }
+}
+.page.contact {
+  overflow-x: clip;
+}
+@media (max-width: 1024px) {
+  .contact__faces {
+    margin-right: 28px;
+  }
+}

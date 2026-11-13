@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import CountUp from '../components/portfolio/CountUp';
 import Portrait from '../components/portfolio/Portrait';
+import Rich from '../components/portfolio/Rich';
 import Signature from '../components/portfolio/Signature';
 import { brands, headlineProof, hubs, profile, skills } from '../data/portfolio';
 import { candidUrl, illustrationUrl } from '../lib/portrait';
@@ -8,15 +9,15 @@ import { candidUrl, illustrationUrl } from '../lib/portrait';
 const story = [
   {
     title: 'It started with the ad.',
-    body: `Mohamed Aman has spent ${profile.experience} in growth and marketing — planning strategy, managing marketing, buying media and directing creative.`,
+    body: `Mohamed Aman has spent **${profile.experience}** in growth and marketing — planning strategy, managing marketing, **buying media** and directing creative.`,
   },
   {
     title: 'Then the store behind it.',
-    body: 'Most of that work is e-commerce: online stores in Saudi Arabia and the wider GCC, where the click is only the first step and the storefront decides the rest.',
+    body: 'Most of that work is **e-commerce**: online stores in Saudi Arabia and the wider GCC, where the click is only the first step and **the storefront decides the rest**.',
   },
   {
     title: 'Then everything around it.',
-    body: 'A campaign is only as good as the page it lands on, the conversation that follows and the operation that fulfils the order — so those are part of the brief too.',
+    body: 'A campaign is only as good as **the page it lands on**, the conversation that follows and the operation that fulfils the order — so those are **part of the brief** too.',
   },
 ];
 
@@ -57,14 +58,18 @@ export default function About() {
           </p>
         </div>
         <div className="about__story">
-          <p className="lede rv">{profile.intro}</p>
+          <p className="lede rv">
+            <Rich text={profile.intro} />
+          </p>
           {story.map((s, i) => (
             <article className="about__beat rv" key={s.title}>
               <span className="about__beat-n" aria-hidden="true">
                 {pad(i + 1)}
               </span>
               <h2>{s.title}</h2>
-              <p>{s.body}</p>
+              <p>
+                <Rich text={s.body} />
+              </p>
             </article>
           ))}
           <ul className="tags rv">
@@ -125,7 +130,9 @@ export default function About() {
               <li className="rv" key={h.id}>
                 <span className="micro gold">{pad(i + 1)}</span>
                 <span className="sectors__name">{h.label}</span>
-                <span className="sectors__desc">{h.summary}</span>
+                <span className="sectors__desc">
+                  <Rich text={h.summary} />
+                </span>
               </li>
             ))}
         </ul>

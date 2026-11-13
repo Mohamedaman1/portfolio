@@ -92,6 +92,11 @@ const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetw
 
   const pad = (n: number) => String(n).padStart(2, '0');
   const total = journeyStops.length;
+  /** The caption fact follows the hub the camera is visiting. */
+  const fact =
+    stop > 0
+      ? journeyStops[stop - 1].fact
+      : { value: `${headlineProof.prefix}${headlineProof.value}${headlineProof.suffix}`, label: headlineProof.label };
   const atStop = stop > 0 ? hubs.find((h) => h.id === journeyStops[stop - 1].hub)! : null;
   /** Arrows travel the journey. Past the last stop, continue into the page. */
   const travel = (dir: number) => {
@@ -146,13 +151,8 @@ const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetw
             {profile.name} <span aria-hidden="true">/</span> {profile.edition}
           </p>
           <p className="network__tagline">{profile.tagline}</p>
-          <p className="network__proof">
-            <strong>
-              {headlineProof.prefix}
-              {headlineProof.value}
-              {headlineProof.suffix}
-            </strong>{' '}
-            {headlineProof.label}
+          <p className="network__proof" key={stop} aria-live="polite">
+            <strong>{fact.value}</strong> {fact.label}
           </p>
           {stepper('stepper stepper--top')}
         </div>

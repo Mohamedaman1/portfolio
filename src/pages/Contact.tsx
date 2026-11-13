@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import ContactComposer from '../components/portfolio/ContactComposer';
 import { contactLinks, profile } from '../data/portfolio';
+import { candidUrl, illustrationUrl } from '../lib/portrait';
 
 export default function Contact() {
   return (
@@ -13,8 +14,24 @@ export default function Contact() {
           <span>The next</span> <span>growth story</span> <span className="gold">could be yours.</span>
         </h1>
         <p className="lede lede--narrow">
-          One message is all it takes to start. Pick what you need and the first line is written for you.
+          <mark className="hl">One message</mark> is all it takes to start. Pick what you need and the first line is{' '}
+          <mark className="hl">written for you</mark>.
         </p>
+        {(candidUrl || illustrationUrl) && (
+          <div className="contact__faces" aria-label="Mohamed Aman">
+            {illustrationUrl && (
+              <figure className="face face--back">
+                <img src={illustrationUrl} alt="Illustrated portrait of Mohamed Aman" width="800" height="1096" />
+              </figure>
+            )}
+            {candidUrl && (
+              <figure className="face face--front">
+                <img src={candidUrl} alt="Mohamed Aman smiling and giving a thumbs up" width="1000" height="1333" />
+                <figcaption className="micro">On the other end of the message</figcaption>
+              </figure>
+            )}
+          </div>
+        )}
       </header>
 
       <ContactComposer />

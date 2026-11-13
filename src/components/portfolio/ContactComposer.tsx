@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { contactLinks, contactTopics, whatsappNumber } from '../../data/portfolio';
+import { illustrationUrl } from '../../lib/portrait';
 
 /**
  * Conversation starter: pick a topic and the first message writes itself.
@@ -56,6 +57,7 @@ export default function ContactComposer({ compact = false }: { compact?: boolean
         </p>
         <div className="chat" aria-live="polite">
           <div className="chat__status">
+            {illustrationUrl && <img className="chat__avatar" src={illustrationUrl} alt="" width="36" height="36" />}
             <span className="chat__dot" />
             <span className="micro">Mohamed Aman · WhatsApp</span>
           </div>

@@ -24,43 +24,43 @@ export const hubs: Hub[] = [
     id: 'ecommerce',
     label: 'E-commerce & Stores',
     summary:
-      'Online stores on Salla, Zid and Shopify — where acquisition, creative, storefront UX and the path to purchase are run as one system. More than $2M in store sales generated across this work.',
+      'Online stores on **Salla, Zid and Shopify** — where acquisition, creative, storefront UX and the path to purchase are run as **one system**. More than **$2M in store sales** generated across this work.',
   },
   {
     id: 'performance',
     label: 'Performance Marketing',
     summary:
-      'Paid social planning, media buying and reporting across Meta, TikTok and Snapchat for e-commerce and local services.',
+      'Paid social planning, **media buying** and reporting across **Meta, TikTok and Snapchat** for e-commerce and local services.',
   },
   {
     id: 'creative',
     label: 'Creative Direction',
     summary:
-      'Campaign concepts, visual direction and localized content that give paid media something worth scaling.',
+      'Campaign concepts, **visual direction** and **localized content** that give paid media something worth scaling.',
   },
   {
     id: 'healthcare',
     label: 'Healthcare',
     summary:
-      'Area-targeted advertising and video campaign direction for Egyptian clinics and practitioners, without patient claims.',
+      '**Area-targeted advertising** and video campaign direction for Egyptian clinics and practitioners, **without patient claims**.',
   },
   {
     id: 'retail',
     label: 'Retail & Services',
     summary:
-      'Local Egyptian retail, launch communication and service businesses — acquisition grounded in neighbourhood context.',
+      'Local Egyptian retail, **launch communication** and service businesses — acquisition grounded in **neighbourhood context**.',
   },
   {
     id: 'systems',
     label: 'Systems & AI',
     summary:
-      'Internal product concepts and workflow architecture for sales, planning and operations. Concepts and prototypes, labelled as such.',
+      'Internal **product concepts** and **workflow architecture** for sales, planning and operations. Concepts and prototypes, labelled as such.',
   },
   {
     id: 'about',
     label: 'Mohamed / About',
     summary:
-      'Growth strategist and marketing manager with 7+ years across Egypt, Saudi Arabia and the wider GCC.',
+      'Growth strategist and marketing manager with **7+ years** across **Egypt, Saudi Arabia and the wider GCC**.',
   },
 ];
 
@@ -667,7 +667,7 @@ export const profile = {
   markets: 'Egypt / KSA / GCC',
   tagline: 'Where strategy meets impact.',
   intro:
-    'Growth strategist and performance marketing lead connecting acquisition, creative direction, commerce UX and the operations behind every conversion.',
+    'Growth strategist and performance marketing lead connecting **acquisition**, **creative direction**, **commerce UX** and the operations behind every conversion.',
   aboutAngle: 'Not just ads. The system around them.',
   contactLine: 'The next growth story could be yours.',
 };
@@ -681,28 +681,28 @@ export const headlineProof = {
   value: 2,
   suffix: 'M+',
   label: 'in store sales generated',
-  detail: 'Combined across the e-commerce stores managed — spread over brands and engagements, not a single store.',
+  detail: '**Combined across the e-commerce stores** managed — spread over brands and engagements, not a single store.',
 };
 
 export const expertise = [
   {
     title: 'E-commerce Growth',
-    body: 'Growing online stores end to end — the offer, the traffic, the storefront and the follow-up.',
+    body: 'Growing online stores **end to end** — the offer, the traffic, the storefront and the follow-up.',
     items: ['Store growth strategy', 'Salla / Zid / Shopify UX', 'WhatsApp Journey', 'SEO URL Structure'],
   },
   {
     title: 'Performance Marketing',
-    body: 'Paid social planning and media buying for e-commerce and local services.',
+    body: 'Paid social planning and **media buying** for e-commerce and local services.',
     items: ['Meta Ads', 'TikTok Ads', 'Snapchat Ads', 'Local Area Targeting', 'Reporting'],
   },
   {
     title: 'Creative Direction',
-    body: 'Campaign concepts and visual standards that fit the brand and the market.',
+    body: 'Campaign concepts and **visual standards** that fit the brand and the market.',
     items: ['Creative Strategy', 'Brand Identity', 'Video Campaign Direction', 'Content Strategy'],
   },
   {
     title: 'Systems & Operations',
-    body: 'The workflows around the campaign: planning, hand-offs and reporting.',
+    body: 'The **workflows around the campaign**: planning, hand-offs and reporting.',
     items: ['AI Workflow Design', 'Sales workflow architecture', 'Reporting', 'Visual Merchandising'],
   },
 ];
@@ -739,12 +739,15 @@ export interface JourneyStop {
   headline: string;
   points: string[];
   stat?: { value: string; label: string };
+  /** Short fact shown in the network caption while the camera is at this hub. */
+  fact: { value: string; label: string };
   cta: { label: string; to: string };
 }
 
 export const journeyStops: JourneyStop[] = [
   {
     hub: 'ecommerce',
+    fact: { value: `${headlineProof.prefix}${headlineProof.value}${headlineProof.suffix}`, label: headlineProof.label },
     headline: 'Stores that sell.',
     stat: { value: `${headlineProof.prefix}${headlineProof.value}${headlineProof.suffix}`, label: headlineProof.label },
     points: ['Salla · Zid · Shopify storefronts', 'Mobile-first product journeys', 'WhatsApp as a deliberate conversion step'],
@@ -752,36 +755,42 @@ export const journeyStops: JourneyStop[] = [
   },
   {
     hub: 'performance',
+    fact: { value: '3', label: 'ad platforms: Meta · TikTok · Snapchat' },
     headline: 'Media that earns its budget.',
     points: ['Meta · TikTok · Snapchat media buying', 'Area targeting for local services', 'Decision-ready reporting'],
     cta: { label: 'What the work is made of', to: '/#expertise' },
   },
   {
     hub: 'creative',
+    fact: { value: '11/11', label: 'art campaign directed for a Saudi store' },
     headline: 'Creative worth scaling.',
     points: ['Campaign concepts and art direction', 'Localized Saudi creative', 'Video campaign direction'],
     cta: { label: 'Read the case studies', to: '/#work' },
   },
   {
     hub: 'healthcare',
+    fact: { value: String(brands.filter((b) => b.category === 'Healthcare').length), label: 'clinics and practices, area-targeted' },
     headline: 'Care, communicated responsibly.',
     points: ['Area-targeted clinic campaigns', 'Educational video content', 'No patient claims, no promises'],
     cta: { label: 'Browse healthcare work', to: '/work' },
   },
   {
     hub: 'retail',
+    fact: { value: String(brands.filter((b) => b.hubs[0] === 'retail').length), label: 'local retail and service brands' },
     headline: 'Local growth, human context.',
     points: ['Launch communication and templates', 'Content and visual merchandising', 'Neighbourhood-level acquisition'],
     cta: { label: 'Browse retail work', to: '/work' },
   },
   {
     hub: 'systems',
+    fact: { value: String(concepts.length), label: 'concepts and architectures in progress' },
     headline: 'The system around the ads.',
     points: ['Sales enablement concepts', 'Planning and operations tooling', 'WhatsApp-first order architecture'],
     cta: { label: 'Concepts in progress', to: '/#systems' },
   },
   {
     hub: 'about',
+    fact: { value: profile.experience, label: 'in growth and marketing' },
     headline: 'One strategist behind it.',
     stat: { value: profile.experience, label: 'across Egypt, KSA and the GCC' },
     points: ['Growth strategist', 'Marketing manager', 'Performance marketer and media buyer'],

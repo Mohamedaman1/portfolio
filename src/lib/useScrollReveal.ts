@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 /** Adds `is-in` to every `.rv` element as it scrolls into view. Re-scans when `key` changes. */
 export function useScrollReveal(key: string) {
   useEffect(() => {
-    const els = [...document.querySelectorAll<HTMLElement>('.rv:not(.is-in)')];
+    const els = [...document.querySelectorAll<HTMLElement>('.rv:not(.is-in), .hl:not(.is-in)')];
     if (!els.length) return;
     if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) {
       els.forEach((el) => el.classList.add('is-in'));

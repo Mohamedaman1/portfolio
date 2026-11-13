@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { hubById, journeyStops } from '../../data/portfolio';
+import Rich from '../portfolio/Rich';
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
@@ -21,7 +22,9 @@ export default function JourneyPanels({ stop }: { stop: number }) {
                 <span>{s.stat.label}</span>
               </p>
             )}
-            <p className="jpanel__body jpanel__bit">{hub.summary}</p>
+            <p className="jpanel__body jpanel__bit">
+              <Rich text={hub.summary} />
+            </p>
             <ul>
               {s.points.map((pt) => (
                 <li className="jpanel__bit" key={pt}>

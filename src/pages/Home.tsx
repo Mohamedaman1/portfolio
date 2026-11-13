@@ -3,6 +3,7 @@ import { useJourney } from '../lib/useJourney';
 import { useScrollFx } from '../lib/useScrollFx';
 import ScrollBand from '../components/portfolio/ScrollBand';
 import Split from '../components/portfolio/Split';
+import Rich from '../components/portfolio/Rich';
 import { Link } from 'react-router-dom';
 import GrowthNetwork, { type GrowthNetworkHandle } from '../components/network/GrowthNetwork';
 import ChapterIndex from '../components/portfolio/ChapterIndex';
@@ -117,7 +118,9 @@ export default function Home({ introDone }: { introDone: boolean }) {
               <span className="gold">01</span> / Intro · Selected work / {profile.year}
             </p>
             <h1>{profile.tagline}</h1>
-            <p className="lede">{profile.intro}</p>
+            <p className="lede">
+              <Rich text={profile.intro} />
+            </p>
             <ul className="tags">
               {profile.roles.map((r) => (
                 <li key={r}>{r}</li>
@@ -132,8 +135,8 @@ export default function Home({ introDone }: { introDone: boolean }) {
       <section className="chapter" id="work">
         <ChapterHead id="work" title="Stores first. Six stories from the network." />
         <p className="lede lede--narrow rv">
-          Most of the work is e-commerce: growing online stores on Salla, Zid and Shopify. The brands below are examples of
-          that practice — the discipline is the point, not the logo.
+          Most of the work is <mark className="hl">e-commerce</mark>: growing online stores on Salla, Zid and Shopify. The brands
+          below are examples of that practice — <mark className="hl">the discipline is the point</mark>, not the logo.
         </p>
         <div className="rv">
           <WorkCarousel items={featuredStories} />
@@ -153,7 +156,9 @@ export default function Home({ introDone }: { introDone: boolean }) {
           </p>
           <div className="proof__text">
             <p className="proof__label">{headlineProof.label}</p>
-            <p className="proof__detail">{headlineProof.detail}</p>
+            <p className="proof__detail">
+              <Rich text={headlineProof.detail} />
+            </p>
             <div className="proof__split" aria-hidden="true">
               <i style={{ flex: 5 }} />
               <i style={{ flex: 3 }} />
@@ -214,7 +219,9 @@ export default function Home({ introDone }: { introDone: boolean }) {
           {expertise.map((e) => (
             <article key={e.title}>
               <h3>{e.title}</h3>
-              <p>{e.body}</p>
+              <p>
+                <Rich text={e.body} />
+              </p>
               <ul>
                 {e.items.map((it) => (
                   <li key={it}>{it}</li>
@@ -247,8 +254,9 @@ export default function Home({ introDone }: { introDone: boolean }) {
       <section className="chapter" id="about">
         <ChapterHead id="about" title={profile.aboutAngle} />
         <p className="lede lede--narrow">
-          Seven-plus years across Egypt, Saudi Arabia and the wider GCC — as strategist, marketing manager and media buyer. The
-          campaigns matter; so does everything a customer meets before and after the click.
+          <mark className="hl">Seven-plus years</mark> across Egypt, Saudi Arabia and the wider GCC — as strategist, marketing
+          manager and media buyer. The campaigns matter; so does everything a customer meets{' '}
+          <mark className="hl">before and after the click</mark>.
         </p>
         <Link className="btn" to="/about">
           Read the full story <span aria-hidden="true">→</span>

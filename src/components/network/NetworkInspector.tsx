@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import Rich from '../portfolio/Rich';
 import type { NodeDetail } from './describe';
 
 interface Props {
@@ -36,7 +37,9 @@ export default function NetworkInspector({ detail, onSelect }: Props) {
           ))}
         </dl>
       )}
-      <p className="inspector__summary">{detail.summary}</p>
+      <p className="inspector__summary">
+        <Rich text={detail.summary} />
+      </p>
       {detail.href && (
         <Link className="btn btn--gold" to={detail.href}>
           {detail.hrefLabel} <span aria-hidden="true">→</span>
