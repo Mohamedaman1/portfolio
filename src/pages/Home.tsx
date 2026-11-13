@@ -1,4 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
+import { useJourney } from '../lib/useJourney';
 import { Link } from 'react-router-dom';
 import GrowthNetwork, { type GrowthNetworkHandle } from '../components/network/GrowthNetwork';
 import ChapterIndex from '../components/portfolio/ChapterIndex';
@@ -9,7 +10,18 @@ import CountUp from '../components/portfolio/CountUp';
 import WorkCarousel from '../components/portfolio/WorkCarousel';
 import Signature from '../components/portfolio/Signature';
 import VerticalIdentity from '../components/portfolio/VerticalIdentity';
-import { brands, chapters, concepts, contactLinks, expertise, featuredStories, headlineProof, profile } from '../data/portfolio';
+import {
+  brands,
+  chapters,
+  concepts,
+  expertise,
+  featuredStories,
+  headlineProof,
+  journeyStops,
+  profile,
+  type HubId,
+} from '../data/portfolio';
+import ContactComposer from '../components/portfolio/ContactComposer';
 
 function ChapterHead({ id, title }: { id: string; title: string }) {
   const c = chapters.find((ch) => ch.id === id)!;
@@ -19,9 +31,9 @@ function ChapterHead({ id, title }: { id: string; title: string }) {
         <span className="gold">{c.n}</span> / {c.label}
       </p>
       <h2 className="rv rv--rise">{title}</h2>
-      <a className="micro chapter__back" href="#top">
+      <button type="button" className="micro chapter__back" onClick={() => window.scrollTo({ top: 0 })}>
         ↑ Network
-      </a>
+      </button>
       <span className="chapter__ghost" aria-hidden="true">
         {c.n}
       </span>
@@ -33,16 +45,23 @@ export default function Home({ introDone }: { introDone: boolean }) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const network = useRef<GrowthNetworkHandle>(null);
 
-  const pick = useCallback((id: string) => {
-    setSelectedId(id);
-    network.current?.focus(id);
-  }, []);
+  const exhibit = useRef<HTMLDivElement>(null);
+  const { stop, mode, goTo } = useJourney(exhibit);
+  const activeHub = stop > 0 ? journeyStops[stop - 1].hub : null;
+
+  const pick = useCallback(
+    (hub: HubId) => {
+      setSelectedId(null);
+      goTo(journeyStops.findIndex((s) => s.hub === hub) + 1);
+    },
+    [goTo],
+  );
 
   const markets = new Set(brands.map((b) => b.market)).size;
 
   return (
     <>
-      <div className="exhibit" id="top">
+      <div className="exhibit" id="top" ref={exhibit}>
         <VerticalIdentity />
         <aside className="index-panel" aria-label="Portfolio index">
           <p className="micro index-panel__title">
@@ -52,10 +71,18 @@ export default function Home({ introDone }: { introDone: boolean }) {
             <ChapterIndex />
           </nav>
           <p className="micro index-panel__sub">Practice areas</p>
-          <FeaturedMiniCards selectedId={selectedId} onPick={pick} />
+          <FeaturedMiniCards activeHub={activeHub} onPick={pick} />
           <p className="micro index-panel__foot">{profile.markets}</p>
         </aside>
-        <GrowthNetwork ref={network} selectedId={selectedId} onSelect={setSelectedId} active={introDone} />
+        <GrowthNetwork
+          ref={network}
+          selectedId={selectedId}
+          onSelect={setSelectedId}
+          active={introDone}
+          stop={stop}
+          mode={mode}
+          goTo={goTo}
+        />
       </div>
       <ChapterRail />
 
@@ -220,18 +247,8 @@ export default function Home({ introDone }: { introDone: boolean }) {
 
       <section className="chapter chapter--contact" id="contact">
         <ChapterHead id="contact" title={profile.contactLine} />
-        <p className="arabic" lang="ar" dir="rtl">
-          {profile.contactArabic}
-        </p>
-        <div className="page__cta rv">
-          {contactLinks.map((l) => (
-            <a key={l.label} className="btn btn--gold" href={l.href} target="_blank" rel="noopener noreferrer">
-              {l.label} <span aria-hidden="true">↗</span>
-            </a>
-          ))}
-          <Link className="btn" to="/contact">
-            Contact page <span aria-hidden="true">→</span>
-          </Link>
+        <div className="rv">
+          <ContactComposer compact />
         </div>
       </section>
     </>

@@ -117,6 +117,11 @@ export interface Project {
   approach: string[];
   deliverables: string[];
   skills: string[];
+  /**
+   * How the client is referred to in the network: by field, not by name.
+   * The name itself appears only on the case-study page.
+   */
+  alias?: string;
   /** Brand colour — used ONLY inside this project's own art. */
   accent: string;
   /** Slugs of related projects (for stories: the brands/concepts they cover). */
@@ -133,6 +138,7 @@ export const projects: Project[] = [
   /* ───────────── Premium e-commerce ───────────── */
   {
     slug: 'dahsha',
+    alias: 'Premium wig store · Zid',
     name: 'Dahsha',
     kind: 'brand',
     category: 'E-commerce',
@@ -161,6 +167,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'zezewigs',
+    alias: 'Human-hair wig store · Salla',
     name: 'ZezeWigs',
     kind: 'brand',
     category: 'E-commerce',
@@ -189,6 +196,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'prestige-wigs',
+    alias: 'Luxury wig store · Salla',
     name: 'Prestige Wigs',
     kind: 'brand',
     category: 'E-commerce',
@@ -217,6 +225,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'rayah',
+    alias: 'Online store · UAE',
     name: 'Rayah',
     kind: 'brand',
     category: 'E-commerce',
@@ -239,6 +248,7 @@ export const projects: Project[] = [
   /* ───────────── Healthcare ───────────── */
   {
     slug: 'dr-hossam-hassan',
+    alias: 'Physiotherapy clinic',
     name: 'Dr Hossam Hassan',
     kind: 'brand',
     category: 'Healthcare',
@@ -259,6 +269,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'dr-mohamed-sadaka',
+    alias: 'Shoulder physio practice',
     name: 'Dr Mohamed Sadaka',
     kind: 'brand',
     category: 'Healthcare',
@@ -279,6 +290,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'dr-amr-azzam',
+    alias: 'Healthcare practice',
     name: 'Dr Amr Azzam',
     kind: 'brand',
     category: 'Healthcare',
@@ -298,6 +310,7 @@ export const projects: Project[] = [
   /* ───────────── Retail & services ───────────── */
   {
     slug: 'el-gannayni-sportswear',
+    alias: 'Sportswear retailer',
     name: 'El-Gannayni Sportswear',
     kind: 'brand',
     category: 'Retail & Services',
@@ -319,6 +332,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'kareem-pharmacies',
+    alias: 'Pharmacy launch',
     name: 'Kareem Pharmacies',
     kind: 'brand',
     category: 'Retail & Services',
@@ -340,6 +354,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'seville',
+    alias: 'Business launch · Social',
     name: 'Seville',
     kind: 'brand',
     category: 'Retail & Services',
@@ -357,6 +372,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'elin-swimming-academy',
+    alias: 'Swimming academy',
     name: 'Elin Swimming Academy',
     kind: 'brand',
     category: 'Retail & Services',
@@ -654,7 +670,6 @@ export const profile = {
     'Growth strategist and performance marketing lead connecting acquisition, creative direction, commerce UX and the operations behind every conversion.',
   aboutAngle: 'Not just ads. The system around them.',
   contactLine: 'The next growth story could be yours.',
-  contactArabic: 'البزنس جاهز؟',
 };
 
 /**
@@ -714,3 +729,73 @@ export const draftProof = {
     { label: 'Average order value', value: '≈ SAR 1,818' },
   ],
 };
+
+/**
+ * The scroll journey through the network: one stop per hub, in this order.
+ * Scrolling (desktop) or the arrows (mobile) fly the camera from cluster to cluster.
+ */
+export interface JourneyStop {
+  hub: HubId;
+  headline: string;
+  points: string[];
+  stat?: { value: string; label: string };
+  cta: { label: string; to: string };
+}
+
+export const journeyStops: JourneyStop[] = [
+  {
+    hub: 'ecommerce',
+    headline: 'Stores that sell.',
+    stat: { value: `${headlineProof.prefix}${headlineProof.value}${headlineProof.suffix}`, label: headlineProof.label },
+    points: ['Salla · Zid · Shopify storefronts', 'Mobile-first product journeys', 'WhatsApp as a deliberate conversion step'],
+    cta: { label: 'See the store work', to: '/#work' },
+  },
+  {
+    hub: 'performance',
+    headline: 'Media that earns its budget.',
+    points: ['Meta · TikTok · Snapchat media buying', 'Area targeting for local services', 'Decision-ready reporting'],
+    cta: { label: 'What the work is made of', to: '/#expertise' },
+  },
+  {
+    hub: 'creative',
+    headline: 'Creative worth scaling.',
+    points: ['Campaign concepts and art direction', 'Localized Saudi creative', 'Video campaign direction'],
+    cta: { label: 'Read the case studies', to: '/#work' },
+  },
+  {
+    hub: 'healthcare',
+    headline: 'Care, communicated responsibly.',
+    points: ['Area-targeted clinic campaigns', 'Educational video content', 'No patient claims, no promises'],
+    cta: { label: 'Browse healthcare work', to: '/work' },
+  },
+  {
+    hub: 'retail',
+    headline: 'Local growth, human context.',
+    points: ['Launch communication and templates', 'Content and visual merchandising', 'Neighbourhood-level acquisition'],
+    cta: { label: 'Browse retail work', to: '/work' },
+  },
+  {
+    hub: 'systems',
+    headline: 'The system around the ads.',
+    points: ['Sales enablement concepts', 'Planning and operations tooling', 'WhatsApp-first order architecture'],
+    cta: { label: 'Concepts in progress', to: '/#systems' },
+  },
+  {
+    hub: 'about',
+    headline: 'One strategist behind it.',
+    stat: { value: profile.experience, label: 'across Egypt, KSA and the GCC' },
+    points: ['Growth strategist', 'Marketing manager', 'Performance marketer and media buyer'],
+    cta: { label: 'Meet Mohamed', to: '/#intro' },
+  },
+];
+
+/** Conversation starters on the contact page. Each becomes a prefilled WhatsApp message — a plain link. */
+export const contactTopics: { id: string; label: string; message: string }[] = [
+  { id: 'store', label: 'Grow my online store', message: 'Hi Mohamed — I run an online store and I want to grow its sales. Can we talk?' },
+  { id: 'ads', label: 'Run my paid ads', message: 'Hi Mohamed — I need someone to plan and manage my paid social campaigns. Can we talk?' },
+  { id: 'storefront', label: 'Fix my storefront', message: 'Hi Mohamed — my store gets visits but not enough orders. I would like your eyes on the storefront.' },
+  { id: 'creative', label: 'Direct my creative', message: 'Hi Mohamed — I am looking for creative direction for my brand and campaigns. Can we talk?' },
+  { id: 'local', label: 'Fill my clinic or shop', message: 'Hi Mohamed — I run a local business and want more of the right customers nearby. Can we talk?' },
+  { id: 'other', label: 'Something else', message: 'Hi Mohamed — I saw your portfolio and would like to talk about a project.' },
+];
+export const whatsappNumber = '201271543918';

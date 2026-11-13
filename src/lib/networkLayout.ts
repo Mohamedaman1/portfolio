@@ -19,6 +19,8 @@ export interface GraphNode {
   thumbnail?: boolean;
   /** Draw the label to the left of the node (it sits left of its hub). */
   labelLeft?: boolean;
+  /** Index of the hub node whose cluster this node belongs to. */
+  cluster: number;
   /** Decorative satellites are visual density only — never a client, product or entity. */
   decorative: boolean;
 }
@@ -66,13 +68,14 @@ export function buildGraph(orientation: Orientation): Graph {
   const index = new Map<string, number>();
   const anchors: { x: number; y: number }[] = [];
 
-  const add = (n: Omit<GraphNode, 'phase' | 'amp' | 'speed'> & { amp?: number }) => {
+  const add = (n: Omit<GraphNode, 'phase' | 'amp' | 'speed' | 'cluster'> & { amp?: number; cluster?: number }) => {
     const i = nodes.length;
     nodes.push({
       ...n,
       phase: rng() * Math.PI * 2,
-      amp: n.amp ?? 2 + rng() * 2.5,
-      speed: 0.25 + rng() * 0.35,
+      amp: n.amp ?? 5 + rng() * 6,
+      speed: 0.3 + rng() * 0.45,
+      cluster: n.cluster ?? i,
     });
     index.set(n.id, i);
     anchors.push({ x: n.x, y: n.y });
@@ -106,7 +109,8 @@ export function buildGraph(orientation: Orientation): Graph {
     const i = add({
       id: projectNodeId(p.slug),
       kind: p.kind === 'concept' ? 'concept' : 'project',
-      label: p.name,
+      label: p.alias ?? p.name,
+      cluster: index.get(hubNodeId(p.hubs[0]))!,
       x: primary.x + Math.cos(angle) * rad,
       y: primary.y + Math.sin(angle) * rad,
       r: 3.8,
@@ -131,7 +135,16 @@ export function buildGraph(orientation: Orientation): Graph {
       x = ps[0].x + (ps[1].x - ps[0].x) * t + (rng() - 0.5) * 90;
       y = ps[0].y + (ps[1].y - ps[0].y) * t + (rng() - 0.5) * 90;
     }
-    const i = add({ id: skillNodeId(s.id), kind: 'skill', label: s.label, x, y, r: 2.4, decorative: false });
+    const i = add({
+      id: skillNodeId(s.id),
+      kind: 'skill',
+      label: s.label,
+      cluster: index.get(hubNodeId(s.hubs[0]))!,
+      x,
+      y,
+      r: 2.4,
+      decorative: false,
+    });
     for (const h of s.hubs) link(i, index.get(hubNodeId(h))!, 1);
   }
   for (const p of entities) {
@@ -153,6 +166,7 @@ export function buildGraph(orientation: Orientation): Graph {
       id: projectNodeId(p.slug),
       kind: 'story',
       label: p.name,
+      cluster: index.get(hubNodeId(p.hubs[0]))!,
       x: cx + Math.cos(a) * 60,
       y: cy + Math.sin(a) * 60,
       r: 5,
@@ -223,7 +237,17 @@ export function buildGraph(orientation: Orientation): Graph {
     const rad = minR + Math.pow(rng(), 1.4) * (maxR - minR);
     const x = Math.min(world.w - 12, Math.max(12, p.x + Math.cos(a) * rad));
     const y = Math.min(world.h - 12, Math.max(12, p.y + Math.sin(a) * rad));
-    const i = add({ id: `decor:${d++}`, kind: 'decor', label: '', x, y, r: 0.9 + rng() * 1.1, decorative: true });
+    const i = add({
+      id: `decor:${d++}`,
+      kind: 'decor',
+      label: '',
+      cluster: p.cluster,
+      x,
+      y,
+      r: 0.9 + rng() * 1.1,
+      amp: 3 + rng() * 5,
+      decorative: true,
+    });
     link(parent, i, tone);
     return { i, a };
   };

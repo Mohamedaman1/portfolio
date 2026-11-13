@@ -1,4 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import { EXIT, expansion, journey, journeyPhase, stopHubIndex, STOPS } from '../../lib/journey';
 import {
   centerOn,
   clamp,
@@ -10,7 +11,7 @@ import {
   type Padding,
 } from '../../lib/networkCamera';
 import { hitTest } from '../../lib/networkHitTest';
-import type { Graph, GraphNode } from '../../lib/networkLayout';
+import { mulberry32, type Graph, type GraphNode } from '../../lib/networkLayout';
 
 export interface NetworkHandle {
   /** Animate the camera to a node. */
@@ -32,33 +33,41 @@ interface Props {
   /** Screen area covered by the inspector while something is selected. */
   insetRight: number;
   insetBottom: number;
+  /** Screen area covered by the journey panel while travelling between hubs. */
+  journeyRight: number;
+  journeyBottom: number;
 }
 
-const PEARL = '244,241,235';
-const GOLD = '184,161,122';
-const COOL = '160,172,184';
+const PEARL = [244, 241, 235];
+const GOLD = [184, 161, 122];
+const COOL = [160, 172, 184];
+const rgb = (c: number[]) => `${c[0]},${c[1]},${c[2]}`;
+const mix = (a: number[], b: number[], t: number) =>
+  `${Math.round(a[0] + (b[0] - a[0]) * t)},${Math.round(a[1] + (b[1] - a[1]) * t)},${Math.round(a[2] + (b[2] - a[2]) * t)}`;
 const MONO = '"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace';
 const KIND_LABEL: Record<GraphNode['kind'], string> = {
   hub: 'Hub',
-  project: 'Project',
+  project: 'Client',
   concept: 'Concept',
   story: 'Case study',
   skill: 'Capability',
   decor: '',
 };
+const TONE_ALPHA = [0.13, 0.2, 0.3, 0.19];
+/** How far nodes spread from the world centre / from their own hub at full expansion. */
+const SPREAD_WORLD = 0.28;
+const SPREAD_HUB = 0.42;
 
-const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
-  { graph, selectedId, onSelect, reducedMotion, active, insetRight, insetBottom },
-  ref,
-) {
+const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(props, ref) {
+  const { graph } = props;
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const tipRef = useRef<HTMLDivElement>(null);
   const api = useRef<NetworkHandle | null>(null);
-  const live = useRef({ selectedId, onSelect, reducedMotion, active, insetRight, insetBottom });
+  const live = useRef(props);
 
   useEffect(() => {
-    live.current = { selectedId, onSelect, reducedMotion, active, insetRight, insetBottom };
+    live.current = props;
   });
 
   useImperativeHandle(
@@ -84,34 +93,82 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
     const N = nodes.length;
     const sx = new Float32Array(N);
     const sy = new Float32Array(N);
-    const edgesByTone: number[][] = [[], [], [], []];
-    edges.forEach((e, i) => edgesByTone[e.tone].push(i));
+    const HUBS = nodes.filter((n) => n.kind === 'hub').length;
     const named: number[] = [];
-    const decor: number[] = [];
-    nodes.forEach((n, i) => (n.decorative ? decor : named).push(i));
+    const decorByCluster: number[][] = Array.from({ length: HUBS }, () => []);
+    nodes.forEach((n, i) => (n.decorative ? decorByCluster[n.cluster].push(i) : named.push(i)));
+
+    // Edges are batched so each cluster can brighten or fade as one stroke.
+    interface EdgeGroup {
+      list: number[];
+      tone: number;
+      ca: number;
+      cb: number;
+    }
+    const groups = new Map<string, EdgeGroup>();
+    const edgeGroup: EdgeGroup[] = [];
+    edges.forEach((e, i) => {
+      const a = nodes[e.a];
+      const b = nodes[e.b];
+      const hubLink = a.kind === 'hub' && b.kind === 'hub';
+      const ca = hubLink ? a.cluster : (a.kind === 'hub' ? b : a).cluster;
+      const cb = hubLink ? b.cluster : ca;
+      const key = `${ca}:${cb}:${e.tone}`;
+      let g = groups.get(key);
+      if (!g) groups.set(key, (g = { list: [], tone: e.tone, ca, cb }));
+      g.list.push(i);
+      edgeGroup[i] = g;
+    });
+    const groupList = [...groups.values()];
+
+    // Signals travelling along real connections keep the network visibly alive.
+    const prng = mulberry32(99);
+    const wired = edges.map((_, i) => i).filter((i) => !nodes[edges[i].a].decorative && !nodes[edges[i].b].decorative);
+    const pulses = Array.from({ length: 34 }, () => ({
+      edge: wired[Math.floor(prng() * wired.length)],
+      offset: prng(),
+      speed: 0.07 + prng() * 0.11,
+      back: prng() < 0.5,
+    }));
+
+    // Which journey stop (1-based) each cluster belongs to.
+    const stopOf = new Array<number>(HUBS).fill(-99);
+    stopHubIndex.forEach((h, s) => (stopOf[h] = s + 1));
+    const dim = new Float32Array(HUBS).fill(1);
+    const glow = new Float32Array(HUBS);
 
     let vp = { w: 0, h: 0 };
     let dpr = 1;
     let baseK = 1;
     let cam: Camera = { x: 0, y: 0, k: 1 };
+    let freeCam: Camera = cam;
     let target: Camera | null = null;
     let fitted = false;
     let hover = -1;
     let raf = 0;
     let onScreen = true;
     let start = performance.now();
+    // Journey ↔ free-camera hand-off
+    let travelling = false;
+    let override: number | null = null;
+    let blendFrom: Camera | null = null;
+    let blendStart = 0;
     const pointers = new Map<number, { x: number; y: number }>();
     let drag: { x: number; y: number; cx: number; cy: number; moved: boolean } | null = null;
     let pinch: { d: number; mx: number; my: number; cam: Camera } | null = null;
 
+    const cx0 = world.w / 2;
+    const cy0 = world.h / 2;
     const pad = (): Padding =>
       vp.w < 720 ? { t: 138, r: 6, b: 50, l: 6 } : { t: 64, r: 24, b: 52, l: 24 };
     const rs = () => clamp(Math.sqrt(cam.k / 0.72), 0.72, 1.5);
     const setCam = (c: Camera) => {
-      cam = clampPan(c, vp, world);
+      cam = travelling ? c : clampPan(c, vp, world);
+      if (travelling) override = journey.pos;
     };
     const tween = (c: Camera) => {
-      const next = clampPan(c, vp, world);
+      const next = travelling ? c : clampPan(c, vp, world);
+      if (travelling) override = journey.pos;
       if (live.current.reducedMotion) {
         cam = next;
         target = null;
@@ -141,6 +198,38 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
       baseK = fit.k;
     };
 
+    /* ───────────── journey: scroll-driven camera, expansion and focus ───────────── */
+    const stopK = () => {
+      const lim = zoomLimits(baseK);
+      return clamp(vp.w < 720 ? Math.max(baseK * 2, 0.6) : baseK * 1.5, lim.min, lim.max);
+    };
+    const hubAt = (stop: number, E: number) => {
+      const h = nodes[stopHubIndex[stop - 1]];
+      return { x: h.x + (h.x - cx0) * SPREAD_WORLD * E, y: h.y + (h.y - cy0) * SPREAD_WORLD * E };
+    };
+    const journeyCam = (pos: number, E: number): Camera => {
+      const { seg, f } = journeyPhase(pos);
+      const { journeyRight, journeyBottom } = live.current;
+      const ox = -journeyRight / 2;
+      const oy = -journeyBottom / 2;
+      const k = stopK();
+      if (seg === 0) {
+        const a = fitCamera(vp, world, pad());
+        const h = hubAt(1, 1);
+        const b = centerOn(h.x, h.y, k, vp, ox, oy);
+        return { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f, k: a.k + (b.k - a.k) * f };
+      }
+      if (seg >= STOPS) {
+        const h = hubAt(STOPS, E);
+        return centerOn(h.x, h.y, k * (1 + 1.5 * f * f), vp, ox * (1 - f), oy * (1 - f));
+      }
+      // fly from one hub to the next, pulling back slightly mid-flight
+      const a = hubAt(seg, E);
+      const b = hubAt(seg + 1, E);
+      const kk = k * (1 - 0.24 * Math.sin(Math.PI * f));
+      return centerOn(a.x + (b.x - a.x) * f, a.y + (b.y - a.y) * f, kk, vp, ox, oy);
+    };
+
     /* ───────────── drawing ───────────── */
     const ease = (t: number) => 1 - Math.pow(1 - t, 3);
 
@@ -152,7 +241,54 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
       const t = (now - start) / 1000;
       const reveal = reduced ? 2 : t / 1.5;
 
-      if (target) {
+      // journey state
+      const pos = clamp(journey.pos, 0, EXIT);
+      const { seg, f, eased } = journeyPhase(pos);
+      const E = expansion(pos);
+      const engaged = clamp(eased, 0, 1);
+      const exit = seg >= STOPS ? f : 0;
+      const flight = seg > 0 && seg < STOPS ? Math.sin(Math.PI * f) : 0;
+      for (let c = 0; c < HUBS; c++) {
+        const w = clamp(1 - Math.abs(Math.min(eased, STOPS) - stopOf[c]) / 0.85, 0, 1);
+        glow[c] = w * w * engaged;
+        // unrelated clusters fade at a stop and come back up a little in flight
+        // …and the whole network lights back up as it bursts open on exit
+        dim[c] = 1 - engaged * (1 - w) * (0.82 - 0.4 * flight) * (1 - exit);
+        glow[c] *= 1 - exit;
+      }
+
+      // camera: free at the overview, scroll-driven while travelling
+      const nowTravelling = pos > 0.002;
+      if (nowTravelling !== travelling) {
+        if (nowTravelling) freeCam = target ?? cam;
+        travelling = nowTravelling;
+        target = null;
+        override = null;
+        blendFrom = cam;
+        blendStart = now;
+        if (!nowTravelling) target = clampPan(freeCam, vp, world);
+      }
+      if (travelling && override !== null && Math.abs(pos - override) > 0.03) {
+        override = null;
+        target = null;
+        blendFrom = cam;
+        blendStart = now;
+      }
+      if (travelling && override === null) {
+        const jc = journeyCam(pos, E);
+        const b = blendFrom ? clamp((now - blendStart) / 520, 0, 1) : 1;
+        if (b < 1 && blendFrom && !reduced) {
+          const e = ease(b);
+          cam = {
+            x: blendFrom.x + (jc.x - blendFrom.x) * e,
+            y: blendFrom.y + (jc.y - blendFrom.y) * e,
+            k: blendFrom.k + (jc.k - blendFrom.k) * e,
+          };
+        } else {
+          cam = jc;
+          blendFrom = null;
+        }
+      } else if (target) {
         cam = {
           x: cam.x + (target.x - cam.x) * 0.14,
           y: cam.y + (target.y - cam.y) * 0.14,
@@ -164,11 +300,15 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
         }
       }
 
+      // node positions: base layout → spread apart by the journey → idle drift → screen
       const { k, x: cx, y: cy } = cam;
+      const sw = SPREAD_WORLD * E;
+      const sh = SPREAD_HUB * E;
       for (let i = 0; i < N; i++) {
         const n = nodes[i];
-        let wx = n.x;
-        let wy = n.y;
+        const h = nodes[n.cluster];
+        let wx = n.x + (n.x - cx0) * sw + (n.x - h.x) * sh;
+        let wy = n.y + (n.y - cy0) * sw + (n.y - h.y) * sh;
         if (!reduced) {
           wx += Math.sin(t * n.speed + n.phase) * n.amp;
           wy += Math.cos(t * n.speed * 0.8 + n.phase * 1.3) * n.amp;
@@ -182,19 +322,14 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
       const near = new Set<number>(active >= 0 ? adj[active] : []);
       const hot = new Set<number>(active >= 0 ? adjEdges[active] : []);
       const scale = rs();
+      const master = 1 - exit * exit * 0.78;
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, vp.w, vp.h);
       ctx.lineCap = 'round';
 
-      // edges, batched per tone
-      const toneStyle = [
-        `rgba(${PEARL},0.13)`,
-        `rgba(${PEARL},0.2)`,
-        `rgba(${PEARL},0.3)`,
-        `rgba(${COOL},0.19)`,
-      ];
-      const tracePath = (list: Iterable<number>, skipHot: boolean) => {
+      // edges
+      const trace = (list: Iterable<number>, skipHot: boolean) => {
         ctx.beginPath();
         for (const i of list) {
           if (skipHot && hot.has(i)) continue;
@@ -207,36 +342,60 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
           ctx.lineTo(ax + (sx[e.b] - ax) * p, ay + (sy[e.b] - ay) * p);
         }
       };
-      ctx.globalAlpha = active >= 0 ? 0.5 : 1;
-      for (let tone = 0; tone < 4; tone++) {
-        tracePath(edgesByTone[tone], true);
-        ctx.strokeStyle = toneStyle[tone];
-        ctx.lineWidth = tone === 2 ? 0.9 : 0.7;
+      const quiet = active >= 0 ? 0.5 : 1;
+      for (const g of groupList) {
+        const d = Math.max(dim[g.ca], dim[g.cb]);
+        const gl = Math.max(glow[g.ca], glow[g.cb]);
+        trace(g.list, true);
+        ctx.globalAlpha = master * quiet;
+        const base = g.tone === 3 ? COOL : PEARL;
+        ctx.strokeStyle = `rgba(${mix(base, GOLD, gl * 0.75)},${(TONE_ALPHA[g.tone] * d * (1 + gl * 0.9)).toFixed(3)})`;
+        ctx.lineWidth = g.tone === 2 ? 0.9 : 0.7;
         ctx.stroke();
       }
-      ctx.globalAlpha = 1;
       if (hot.size) {
-        tracePath(hot, false);
-        ctx.strokeStyle = `rgba(${GOLD},0.85)`;
+        trace(hot, false);
+        ctx.globalAlpha = master;
+        ctx.strokeStyle = `rgba(${rgb(GOLD)},0.85)`;
         ctx.lineWidth = 1;
         ctx.stroke();
       }
 
-      // decorative satellites
-      const nodeAlpha = reduced ? 1 : clamp((reveal - 0.25) / 0.7, 0, 1);
-      ctx.globalAlpha = nodeAlpha * (active >= 0 ? 0.45 : 0.8);
-      ctx.fillStyle = `rgb(${PEARL})`;
-      ctx.beginPath();
-      for (const i of decor) {
-        if (near.has(i)) continue;
-        const r = nodes[i].r * scale;
-        ctx.moveTo(sx[i] + r, sy[i]);
-        ctx.arc(sx[i], sy[i], r, 0, 6.2832);
+      // signals
+      if (!reduced && reveal > 1.4) {
+        ctx.fillStyle = `rgb(${rgb(GOLD)})`;
+        for (const pu of pulses) {
+          const e = edges[pu.edge];
+          const d = Math.max(dim[edgeGroup[pu.edge].ca], dim[edgeGroup[pu.edge].cb]);
+          let u = (t * pu.speed + pu.offset) % 1;
+          const fade = Math.sin(u * Math.PI);
+          if (pu.back) u = 1 - u;
+          const x = sx[e.a] + (sx[e.b] - sx[e.a]) * u;
+          const y = sy[e.a] + (sy[e.b] - sy[e.a]) * u;
+          ctx.globalAlpha = master * fade * d * 0.9;
+          ctx.beginPath();
+          ctx.arc(x, y, 1.7 * scale, 0, 6.2832);
+          ctx.fill();
+        }
       }
-      ctx.fill();
+
+      // decorative satellites, one path per cluster
+      const nodeAlpha = (reduced ? 1 : clamp((reveal - 0.25) / 0.7, 0, 1)) * master;
+      for (let c = 0; c < HUBS; c++) {
+        ctx.globalAlpha = nodeAlpha * (active >= 0 ? 0.45 : 0.8) * dim[c];
+        ctx.fillStyle = `rgb(${mix(PEARL, GOLD, glow[c] * 0.55)})`;
+        ctx.beginPath();
+        for (const i of decorByCluster[c]) {
+          if (near.has(i)) continue;
+          const r = nodes[i].r * scale;
+          ctx.moveTo(sx[i] + r, sy[i]);
+          ctx.arc(sx[i], sy[i], r, 0, 6.2832);
+        }
+        ctx.fill();
+      }
       if (active >= 0) {
         ctx.globalAlpha = nodeAlpha;
-        ctx.fillStyle = `rgb(${GOLD})`;
+        ctx.fillStyle = `rgb(${rgb(GOLD)})`;
         ctx.beginPath();
         for (const i of adj[active]) {
           if (!nodes[i].decorative) continue;
@@ -253,21 +412,34 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
         const n = nodes[i];
         const x = sx[i];
         const y = sy[i];
-        if (x < -160 || y < -40 || x > vp.w + 60 || y > vp.h + 40) continue;
+        if (x < -220 || y < -40 || x > vp.w + 220 || y > vp.h + 40) continue;
         const isActive = i === active || i === selected;
         const lit = isActive || near.has(i);
-        const dim = active >= 0 && !lit;
+        const dimmed = active >= 0 && !lit;
+        const cd = dim[n.cluster];
+        const cg = glow[n.cluster];
         const r = n.r * scale;
-        ctx.globalAlpha = nodeAlpha * (dim ? 0.3 : 1);
-        const fill = isActive ? `rgb(${GOLD})` : `rgb(${PEARL})`;
+        const a = nodeAlpha * (dimmed ? 0.3 : 1) * cd;
+        ctx.globalAlpha = a;
+        const stopHub = n.kind === 'hub' && cg > 0.5;
+        const fill = isActive || stopHub ? `rgb(${rgb(GOLD)})` : `rgb(${rgb(PEARL)})`;
 
         if (n.kind === 'hub') {
-          const breathe = reduced ? 0 : Math.sin(t * 0.9 + n.phase) * 1.2;
+          const breathe = reduced ? 0 : Math.sin(t * 0.9 + n.phase) * 1.4;
           ctx.beginPath();
-          ctx.arc(x, y, r + 7 + breathe, 0, 6.2832);
-          ctx.strokeStyle = `rgba(${isActive ? GOLD : PEARL},${isActive ? 0.7 : 0.22})`;
+          ctx.arc(x, y, r + 7 + breathe + cg * 5, 0, 6.2832);
+          ctx.strokeStyle = `rgba(${rgb(isActive || stopHub ? GOLD : PEARL)},${isActive || stopHub ? 0.7 : 0.22})`;
           ctx.lineWidth = 1;
           ctx.stroke();
+          if (cg > 0.05 && !reduced) {
+            // a slow ring radiating from the hub the camera is visiting
+            const ring = (t * 0.35 + n.phase) % 1;
+            ctx.globalAlpha = a * cg * (1 - ring) * 0.5;
+            ctx.beginPath();
+            ctx.arc(x, y, r + 10 + ring * 46, 0, 6.2832);
+            ctx.stroke();
+            ctx.globalAlpha = a;
+          }
           ctx.beginPath();
           ctx.arc(x, y, r, 0, 6.2832);
           ctx.fillStyle = fill;
@@ -278,10 +450,10 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
           ctx.fillStyle = '#0d0d0d';
           ctx.fillRect(x - w / 2, y - h / 2, w, h);
           ctx.fillStyle = n.accent ?? fill;
-          ctx.globalAlpha *= 0.75;
+          ctx.globalAlpha = a * 0.75;
           ctx.fillRect(x - w / 2, y + h / 2 - 3 * scale, w, 3 * scale);
-          ctx.globalAlpha = nodeAlpha * (dim ? 0.3 : 1);
-          ctx.strokeStyle = isActive ? `rgb(${GOLD})` : `rgba(${PEARL},0.6)`;
+          ctx.globalAlpha = a;
+          ctx.strokeStyle = isActive ? `rgb(${rgb(GOLD)})` : `rgba(${rgb(PEARL)},0.6)`;
           ctx.lineWidth = 1;
           ctx.strokeRect(x - w / 2 + 0.5, y - h / 2 + 0.5, w - 1, h - 1);
         } else if (n.kind === 'concept') {
@@ -295,7 +467,7 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
         } else if (n.kind === 'skill') {
           ctx.beginPath();
           ctx.arc(x, y, r, 0, 6.2832);
-          ctx.fillStyle = isActive ? fill : `rgb(${COOL})`;
+          ctx.fillStyle = isActive ? fill : `rgb(${rgb(COOL)})`;
           ctx.fill();
         } else {
           ctx.beginPath();
@@ -305,19 +477,24 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
           if (isActive) {
             ctx.beginPath();
             ctx.arc(x, y, r + 5, 0, 6.2832);
-            ctx.strokeStyle = `rgba(${GOLD},0.7)`;
+            ctx.strokeStyle = `rgba(${rgb(GOLD)},0.7)`;
             ctx.lineWidth = 1;
             ctx.stroke();
           }
         }
 
-        // labels: hubs always; projects from baseline; details as you zoom in or highlight
+        // labels: hubs always; the visited cluster in full; the rest as you zoom in or highlight
+        const visiting = cg > 0.45;
+        const hushed = engaged > 0.5 && cg < 0.3 && n.kind !== 'hub' && !lit;
         const show =
-          n.kind === 'hub' ||
-          lit ||
-          ((n.kind === 'project' || n.kind === 'concept') && k >= 0.55) ||
-          k >= 0.98;
+          !hushed &&
+          (n.kind === 'hub' ||
+            lit ||
+            (visiting && n.kind !== 'story') ||
+            ((n.kind === 'project' || n.kind === 'concept') && k >= 0.55) ||
+            k >= 0.98);
         if (!show) continue;
+        if (visiting && n.kind !== 'hub' && !lit) ctx.globalAlpha = a * clamp((cg - 0.45) / 0.3, 0, 1);
         ctx.strokeStyle = 'rgba(2,2,2,0.85)';
         ctx.lineWidth = 3.5;
         ctx.lineJoin = 'round';
@@ -325,19 +502,19 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
           ctx.font = `600 ${vp.w < 720 ? 10 : 11}px ${MONO}`;
           if (hasSpacing) ctx.letterSpacing = '1.4px';
           ctx.textAlign = 'center';
-          ctx.fillStyle = isActive ? `rgb(${GOLD})` : `rgb(${PEARL})`;
+          ctx.fillStyle = fill;
           const text = n.label.toUpperCase();
-          ctx.strokeText(text, x, y + r + 24);
-          ctx.fillText(text, x, y + r + 24);
+          ctx.strokeText(text, x, y + r + 24 + cg * 5);
+          ctx.fillText(text, x, y + r + 24 + cg * 5);
         } else {
           ctx.font = `${n.kind === 'skill' ? 400 : 500} ${n.kind === 'skill' ? 9.5 : 10.5}px ${MONO}`;
           if (hasSpacing) ctx.letterSpacing = '0.3px';
           ctx.textAlign = n.labelLeft ? 'right' : 'left';
           ctx.fillStyle = isActive
-            ? `rgb(${GOLD})`
+            ? `rgb(${rgb(GOLD)})`
             : n.kind === 'skill'
-              ? `rgba(${COOL},0.9)`
-              : `rgba(${PEARL},0.82)`;
+              ? `rgba(${rgb(COOL)},0.9)`
+              : `rgba(${rgb(PEARL)},0.82)`;
           const off = n.kind === 'story' ? 15 * scale : r + 6;
           const lx = n.labelLeft ? x - off : x + off;
           ctx.strokeText(n.label, lx, y + 3.5);
@@ -376,7 +553,6 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
 
     const onDown = (e: PointerEvent) => {
       if (e.pointerType === 'mouse' && e.button !== 0) return;
-      canvas.setPointerCapture(e.pointerId);
       const p = local(e);
       pointers.set(e.pointerId, p);
       target = null;
@@ -386,6 +562,11 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
         const [a, b] = [...pointers.values()];
         pinch = { d: Math.hypot(a.x - b.x, a.y - b.y) || 1, mx: (a.x + b.x) / 2, my: (a.y + b.y) / 2, cam };
         if (drag) drag.moved = true;
+      }
+      try {
+        canvas.setPointerCapture(e.pointerId);
+      } catch {
+        /* pointer already released */
       }
     };
     const onMove = (e: PointerEvent) => {
@@ -437,22 +618,14 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
       if (!pointers.size) setHover(-1);
     };
     const onWheel = (e: WheelEvent) => {
-      // Once the page has scrolled past the exhibition, the wheel belongs to the page.
-      if (window.scrollY > 8) return;
-      const kNow = (target ?? cam).k;
-      const lim = zoomLimits(baseK);
-      // Fully zoomed out + scrolling down → hand the wheel back so the page can continue.
-      if (e.deltaY > 0 && kNow <= lim.min * 1.005) return;
-      if (e.deltaY < 0 && kNow >= lim.max * 0.995) {
-        e.preventDefault();
-        return;
-      }
+      // Plain scrolling belongs to the page (it drives the journey).
+      // Zoom is pinch on a trackpad, or Ctrl / ⌘ + wheel.
+      if (!e.ctrlKey && !e.metaKey) return;
       e.preventDefault();
       const p = local(e);
       const unit = e.deltaMode === 1 ? 16 : 1;
-      const factor = Math.exp(-e.deltaY * unit * (e.ctrlKey ? 0.01 : 0.0016));
       target = null;
-      setCam(zoomAt(cam, p.x, p.y, factor, baseK));
+      setCam(zoomAt(cam, p.x, p.y, Math.exp(-e.deltaY * unit * 0.01), baseK));
     };
     const onDbl = (e: MouseEvent) => {
       const p = local(e);
@@ -493,6 +666,9 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
       e.preventDefault();
     };
 
+    /** Current (expanded) world position of a node, without idle drift. */
+    const worldOf = (i: number) => ({ x: (sx[i] - cam.x) / cam.k, y: (sy[i] - cam.y) / cam.k });
+
     const handle: NetworkHandle = {
       focus(id) {
         const i = index.get(id);
@@ -502,7 +678,8 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
         const want = n.kind === 'hub' ? Math.max(baseK * 1.35, 0.6) : Math.max(baseK * 1.7, 1);
         const k = clamp(Math.max((target ?? cam).k, want), lim.min, lim.max);
         const { insetRight: ir, insetBottom: ib } = live.current;
-        tween(centerOn(n.x, n.y, k, vp, -ir / 2, -ib / 2));
+        const w = worldOf(i);
+        tween(centerOn(w.x, w.y, k, vp, -ir / 2, -ib / 2));
       },
       reveal(id) {
         const i = index.get(id);
@@ -511,8 +688,8 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
         const x = sx[i];
         const y = sy[i];
         if (x < 60 || y < 60 || x > vp.w - ir - 60 || y > vp.h - ib - 50) {
-          const n = nodes[i];
-          tween(centerOn(n.x, n.y, (target ?? cam).k, vp, -ir / 2, -ib / 2));
+          const w = worldOf(i);
+          tween(centerOn(w.x, w.y, (target ?? cam).k, vp, -ir / 2, -ib / 2));
         }
       },
       zoom(f) {
@@ -523,7 +700,13 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
         tween({ k: c.k, x: c.x + dx, y: c.y + dy });
       },
       reset() {
-        tween(fitCamera(vp, world, pad()));
+        if (travelling) {
+          // hand the camera back to the journey
+          override = null;
+          target = null;
+          blendFrom = cam;
+          blendStart = performance.now();
+        } else tween(fitCamera(vp, world, pad()));
       },
     };
     api.current = handle;
@@ -557,6 +740,8 @@ const NetworkCanvas = forwardRef<NetworkHandle, Props>(function NetworkCanvas(
         },
         zoom: () => cam.k / baseK,
         counts: () => ({ nodes: N, edges: edges.length }),
+        journey: () => journey.pos,
+        label: (id: string) => nodes[index.get(id) ?? 0].label,
       };
     }
 

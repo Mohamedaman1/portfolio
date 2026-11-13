@@ -1,25 +1,24 @@
-import { featuredAreas, headlineProof } from '../../data/portfolio';
-import { hubNodeId } from '../../lib/networkLayout';
+import { featuredAreas, headlineProof, type HubId } from '../../data/portfolio';
 import ProjectArt from './ProjectArt';
 
 interface Props {
-  selectedId: string | null;
-  onPick(id: string): void;
+  /** Hub the journey is currently visiting, if any. */
+  activeHub: HubId | null;
+  onPick(hub: HubId): void;
 }
 
-/** Practice-area cards. Each one selects and focuses its real hub in the network. */
-export default function FeaturedMiniCards({ selectedId, onPick }: Props) {
+/** Practice-area cards. Each one travels the journey to its real hub in the network. */
+export default function FeaturedMiniCards({ activeHub, onPick }: Props) {
   return (
     <ul className="mini-cards">
       {featuredAreas.map((a, i) => {
-        const id = hubNodeId(a.hub);
         return (
           <li key={a.hub}>
             <button
               type="button"
-              className={`mini-card${i === 0 ? ' mini-card--lead' : ''}${selectedId === id ? ' is-active' : ''}`}
-              aria-pressed={selectedId === id}
-              onClick={() => onPick(id)}
+              className={`mini-card${i === 0 ? ' mini-card--lead' : ''}${activeHub === a.hub ? ' is-active' : ''}`}
+              aria-pressed={activeHub === a.hub}
+              onClick={() => onPick(a.hub)}
             >
               <span className="mini-card__art">
                 <ProjectArt project={{ slug: `area-${a.hub}`, name: a.title, accent: a.accent }} />

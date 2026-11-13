@@ -1,42 +1,57 @@
 import { Link } from 'react-router-dom';
+import ContactComposer from '../components/portfolio/ContactComposer';
 import { contactLinks, profile } from '../data/portfolio';
 
 export default function Contact() {
   return (
-    <div className="page page--contact">
-      <header className="page__head">
+    <div className="page contact">
+      <header className="page__head contact__head">
         <p className="micro">
           <span className="gold">Contact</span> / {profile.markets}
         </p>
-        <h1>{profile.contactLine}</h1>
-        <p className="arabic" lang="ar" dir="rtl">
-          {profile.contactArabic}
+        <h1 className="contact__title">
+          <span>The next</span> <span>growth story</span> <span className="gold">could be yours.</span>
+        </h1>
+        <p className="lede lede--narrow">
+          One message is all it takes to start. Pick what you need and the first line is written for you.
         </p>
       </header>
-      {contactLinks.length ? (
-        <ul className="rows rows--static">
-          {contactLinks.map((l) => (
-            <li key={l.label}>
-              <a href={l.href} target="_blank" rel="noopener noreferrer">
-                <span className="rows__name">{l.label}</span>
-                <span className="rows__desc">{l.value}</span>
-                <span className="status">Open ↗</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="note">
-          Direct contact details will be listed here once they are confirmed for publication.
-        </p>
-      )}
+
+      <ContactComposer />
+
+      <ol className="contact__steps">
+        <li className="rv">
+          <span className="micro gold">01</span>
+          <strong>You send one message</strong>
+          <span>Say what the business is and what you want to change.</span>
+        </li>
+        <li className="rv">
+          <span className="micro gold">02</span>
+          <strong>We look at the whole path</strong>
+          <span>Offer, traffic, storefront and follow-up — not just the ads.</span>
+        </li>
+        <li className="rv">
+          <span className="micro gold">03</span>
+          <strong>You get a clear next step</strong>
+          <span>What to fix first, and what it should lead to.</span>
+        </li>
+      </ol>
+
+      <ul className="rows rows--static contact__links">
+        {contactLinks.map((l) => (
+          <li key={l.label}>
+            <a href={l.href} target="_blank" rel="noopener noreferrer">
+              <span className="rows__name">{l.label}</span>
+              <span className="rows__desc">{l.value}</span>
+              <span className="status">Open ↗</span>
+            </a>
+          </li>
+        ))}
+      </ul>
       <p className="note">These are plain links. This portfolio has no contact form and sends nothing to any service.</p>
       <div className="page__cta">
         <Link className="btn" to="/work">
-          See the work <span aria-hidden="true">→</span>
-        </Link>
-        <Link className="btn" to="/">
-          Back to the network <span aria-hidden="true">→</span>
+          See the work first <span aria-hidden="true">→</span>
         </Link>
       </div>
     </div>

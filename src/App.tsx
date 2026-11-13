@@ -27,7 +27,10 @@ function ScrollManager() {
     if (TITLES[pathname]) document.title = TITLES[pathname];
     if (hash) {
       const id = decodeURIComponent(hash.slice(1));
-      requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView());
+      requestAnimationFrame(() => {
+        if (id === 'top') window.scrollTo(0, 0);
+        else document.getElementById(id)?.scrollIntoView();
+      });
     } else if (type !== 'POP') {
       window.scrollTo(0, 0);
     }

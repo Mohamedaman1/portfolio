@@ -1,8 +1,10 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
 import type { Orientation } from '../../data/graph';
-import { headlineProof, hubs, profile } from '../../data/portfolio';
-import { buildGraph, hubNodeId } from '../../lib/networkLayout';
+import { headlineProof, hubs, journeyStops, profile } from '../../data/portfolio';
+import type { JourneyMode } from '../../lib/useJourney';
+import { buildGraph } from '../../lib/networkLayout';
 import AccessibleNodeIndex from './AccessibleNodeIndex';
+import JourneyPanels from './JourneyPanels';
 import { describeNode } from './describe';
 import NetworkCanvas, { type NetworkHandle } from './NetworkCanvas';
 import NetworkControls from './NetworkControls';
@@ -17,6 +19,10 @@ interface Props {
   onSelect(id: string | null): void;
   /** False while the opening intro is still covering the page. */
   active: boolean;
+  /** Current journey stop (0 = overview) and how to travel. */
+  stop: number;
+  mode: JourneyMode;
+  goTo(stop: number): void;
 }
 
 function useReducedMotion() {
@@ -32,7 +38,10 @@ function useReducedMotion() {
   return reduced;
 }
 
-const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetwork({ selectedId, onSelect, active }, ref) {
+const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetwork(
+  { selectedId, onSelect, active, stop, mode, goTo },
+  ref,
+) {
   const stageRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<NetworkHandle>(null);
   const [orientation, setOrientation] = useState<Orientation>('landscape');
@@ -81,18 +90,40 @@ const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetw
   );
   const closeList = useCallback(() => setListOpen(false), []);
 
-  const hubIds = hubs.map((h) => hubNodeId(h.id));
-  const hubAt = selectedId ? hubIds.indexOf(selectedId) : -1;
-  /** Turn the camera to the previous / next hub. */
-  const turn = (dir: number) => {
-    const next = hubAt < 0 ? (dir > 0 ? 0 : hubIds.length - 1) : (hubAt + dir + hubIds.length) % hubIds.length;
-    selectAndFocus(hubIds[next]);
-  };
   const pad = (n: number) => String(n).padStart(2, '0');
+  const total = journeyStops.length;
+  const atStop = stop > 0 ? hubs.find((h) => h.id === journeyStops[stop - 1].hub)! : null;
+  /** Arrows travel the journey. Past the last stop, continue into the page. */
+  const travel = (dir: number) => {
+    onSelect(null);
+    if (dir > 0 && stop >= total) {
+      if (mode === 'scroll') goTo(total + 1.05);
+      else document.getElementById('intro')?.scrollIntoView();
+    } else goTo(stop + dir);
+  };
+  const stepper = (className: string) => (
+    <div className={className} role="group" aria-label="Travel through the network">
+      <button type="button" onClick={() => travel(-1)} disabled={stop === 0} aria-label="Previous stop">
+        ←
+      </button>
+      <p className="micro" aria-live="polite">
+        <span className="gold">{stop > 0 ? pad(stop) : '00'}</span> / {pad(total)}
+        <span className="stepper__label">{atStop ? atStop.label : 'Start the tour'}</span>
+      </p>
+      <button
+        type="button"
+        className={stop === 0 ? 'is-inviting' : undefined}
+        onClick={() => travel(1)}
+        aria-label={stop >= total ? 'Continue to the page' : 'Next stop'}
+      >
+        {stop >= total ? '↓' : '→'}
+      </button>
+    </div>
+  );
 
   return (
     <section className="network" aria-label="The growth network">
-      <div className="network__stage" ref={stageRef}>
+      <div className={`network__stage${stop > 0 ? ' is-travelling' : ''}`} ref={stageRef}>
         {canvasSupported ? (
           <NetworkCanvas
             ref={canvasRef}
@@ -103,6 +134,8 @@ const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetw
             active={active}
             insetRight={compact ? 0 : 340}
             insetBottom={compact ? 220 : 0}
+            journeyRight={compact ? 0 : 430}
+            journeyBottom={compact ? 250 : 0}
           />
         ) : (
           <p className="network__fallback">The interactive network needs Canvas support. Use the list below to browse the work.</p>
@@ -121,20 +154,10 @@ const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetw
             </strong>{' '}
             {headlineProof.label}
           </p>
-          <div className="stepper" role="group" aria-label="Turn between hubs">
-            <button type="button" onClick={() => turn(-1)} aria-label="Previous hub">
-              ←
-            </button>
-            <p className="micro" aria-live="polite">
-              <span className="gold">{hubAt >= 0 ? pad(hubAt + 1) : '––'}</span> / {pad(hubIds.length)}
-              <span className="stepper__label">{hubAt >= 0 ? hubs[hubAt].label : 'Turn through the hubs'}</span>
-            </p>
-            <button type="button" onClick={() => turn(1)} aria-label="Next hub">
-              →
-            </button>
-          </div>
+          {stepper('stepper stepper--top')}
         </div>
 
+        <JourneyPanels stop={stop} />
         <NetworkInspector detail={detail} onSelect={selectAndFocus} />
 
         <div className="network__foot">
@@ -143,7 +166,7 @@ const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetw
               <i className="lg lg--hub" /> Hub
             </li>
             <li>
-              <i className="lg lg--project" /> Project
+              <i className="lg lg--project" /> Client
             </li>
             <li>
               <i className="lg lg--concept" /> Concept
@@ -156,8 +179,10 @@ const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetw
             </li>
           </ul>
           <p className="micro network__cue">
-            <span className="cue--mouse">Drag to explore · Scroll to zoom</span>
-            <span className="cue--touch">Drag · Pinch · Tap a node</span>
+            <span className="cue--mouse">
+              {mode === 'scroll' ? 'Scroll to travel' : 'Use the arrows to travel'} · Drag to explore
+            </span>
+            <span className="cue--touch">Drag · Tap a node</span>
           </p>
           <NetworkControls
             onZoomIn={() => canvasRef.current?.zoom(1.35)}
@@ -174,25 +199,13 @@ const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetw
         <AccessibleNodeIndex open={listOpen || !canvasSupported} onClose={closeList} onSelect={selectAndFocus} />
       </div>
 
-      <nav className="network__chips" aria-label="Jump to a hub or featured project">
-        {hubIds.map((id, i) => {
-          const label = hubs[i].label;
-          return (
-            <button
-              key={id}
-              type="button"
-              className={`chip${selectedId === id ? ' is-active' : ''}`}
-              aria-pressed={selectedId === id}
-              onClick={() => selectAndFocus(id)}
-            >
-              {label}
-            </button>
-          );
-        })}
-        <a className="chip chip--next" href="#intro">
-          Continue ↓
+      {/* Touch screens: large arrows are the way through the network. */}
+      <div className="network__tour">
+        {stepper('stepper stepper--tour')}
+        <a className="network__skip micro" href="#intro">
+          Skip to the page ↓
         </a>
-      </nav>
+      </div>
     </section>
   );
 });

@@ -60,7 +60,7 @@ export function describeNode(graph: Graph, id: string): NodeDetail | null {
     id,
     kind: node.kind,
     kindLabel: p.kind === 'story' ? 'Case study' : p.kind === 'concept' ? 'Concept' : 'Project',
-    title: p.name,
+    title: p.alias ?? p.name,
     status: p.status,
     meta: [
       { label: 'Role', value: p.role },

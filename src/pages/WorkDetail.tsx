@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import ProjectArt from '../components/portfolio/ProjectArt';
 import ProjectCard from '../components/portfolio/ProjectCard';
 import { hubById, projectBySlug, projects, skillById } from '../data/portfolio';
@@ -8,6 +8,7 @@ import NotFound from './NotFound';
 export default function WorkDetail() {
   const { slug = '' } = useParams();
   const p = projectBySlug.get(slug);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (p) document.title = `${p.name} — Mohamed Aman`;
@@ -29,6 +30,30 @@ export default function WorkDetail() {
 
   return (
     <article className="page case">
+      <nav className="backbar" aria-label="Case study navigation">
+        <button
+          type="button"
+          className="backbar__back"
+          onClick={() => {
+            // Go back if the visitor came from inside the site; otherwise to the work directory.
+            if ((window.history.state as { idx?: number } | null)?.idx) navigate(-1);
+            else navigate('/work');
+          }}
+        >
+          <span aria-hidden="true">←</span> Back
+        </button>
+        <p className="micro backbar__crumbs">
+          <Link to="/work">All work</Link> / {p.category} / <span>{p.name}</span>
+        </p>
+        <div className="arrows">
+          <Link to={`/work/${prev.slug}`} aria-label={`Previous: ${prev.name}`}>
+            ←
+          </Link>
+          <Link to={`/work/${next.slug}`} aria-label={`Next: ${next.name}`}>
+            →
+          </Link>
+        </div>
+      </nav>
       <header className="case__hero">
         <div className="case__title">
           <p className="micro">

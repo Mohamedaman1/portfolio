@@ -44,9 +44,9 @@ export default function AccessibleNodeIndex({ open, onClose, onSelect }: Props) 
                 {items.map((p) => (
                   <li key={p.slug}>
                     <button type="button" onClick={() => onSelect(projectNodeId(p.slug))}>
-                      {p.name}
+                      {p.alias ?? p.name}
                     </button>
-                    <Link to={`/work/${p.slug}`} aria-label={`Open case study: ${p.name}`}>
+                    <Link to={`/work/${p.slug}`} aria-label={`Open case study: ${p.alias ?? p.name}`}>
                       ↗
                     </Link>
                   </li>

@@ -92,12 +92,38 @@ and it is disabled under `prefers-reduced-motion`.
 Replace a file with the same name to swap it. If a file is removed, the site falls back to a
 labelled placeholder (portrait, signature) or leaves the block out.
 
-## Motion and navigation
+## The scroll journey
 
-- Hub stepper (`← 01 / 07 →`) in the network turns the camera from hub to hub.
+Scrolling the home page travels through the network. `src/lib/useJourney.ts` builds one GSAP master
+timeline that tweens a single value, `journey.pos` (0 = overview, 1–7 = hub stops, 8 = exit):
+
+- **Desktop:** the exhibition is pinned with ScrollTrigger (`pin` + `scrub`) and scroll scrubs the timeline,
+  forwards and backwards.
+- **Touch / narrow screens and reduced motion:** nothing is pinned; the large arrows under the network
+  play the same timeline stop by stop.
+
+The canvas reads `journey.pos` every frame (`src/lib/journey.ts`, `NetworkCanvas.tsx`) and derives node
+spread, edge geometry, camera position and zoom, and which cluster is lit. The same timeline reveals the
+content panel for each hub (`JourneyPanels.tsx`). Stops, headlines and panel copy are `journeyStops` in
+`src/data/portfolio.ts`.
+
+Dragging, clicking nodes and the zoom buttons keep working during the journey; the next scroll hands the
+camera back. Plain wheel always scrolls the page — zoom is pinch, Ctrl/⌘ + wheel, or the buttons.
+
+## Other motion and navigation
+
+- Side strip: the name runs as a vertical ticker and the signature writes itself in.
+- Signals travel along connections and nodes drift, so the network is never static.
 - Featured case studies are a snap carousel with arrow buttons, arrow keys and a counter.
-- A floating chapter rail shows `03 / 07` with `↑ ↓` arrows to turn chapters, plus a scroll-progress line.
-- Sections reveal on scroll, numbers count up, chapter numerals drift (CSS scroll timelines where supported).
+- A floating chapter rail shows `03 / 07` with `↑ ↓` arrows, plus a scroll-progress line.
+- Case-study pages have a sticky bar with Back and previous / next arrows.
+- Contact: pick a topic and the first WhatsApp message is typed for you (`contactTopics` in `portfolio.ts`).
+- All of it is switched off under the operating system's **Reduce motion** setting.
+
+## Client names
+
+In the network, clients are labelled by field (`alias` on each project in `portfolio.ts`, e.g.
+"Premium wig store · Zid"), not by name. The name appears on the case-study page and in `/work`.
 
 ## Media still needed
 
@@ -110,8 +136,8 @@ Project art is clearly labelled placeholder artwork — none of it is presented 
 
 ## Network controls
 
-Drag to pan · wheel or pinch to zoom at the pointer · click a node to inspect · `+` `−` `Reset`
+Drag to pan · pinch or Ctrl/⌘ + wheel to zoom at the pointer · click a node to inspect · `+` `−` `Reset`
 buttons · `List` opens a keyboard- and touch-friendly index of every node · arrow keys pan,
 `+`/`−` zoom, `0` resets, `Esc` clears the selection · double-click empty space to reset.
-When fully zoomed out, scrolling down continues to the page. Idle motion is disabled under
+Idle motion is disabled under
 `prefers-reduced-motion`, and rendering pauses when the tab is hidden or the network is off-screen.
