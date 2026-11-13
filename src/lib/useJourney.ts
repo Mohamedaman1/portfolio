@@ -4,6 +4,8 @@ import { useCallback, useLayoutEffect, useRef, useState, type RefObject } from '
 import { EXIT, journey, STOPS } from './journey';
 
 gsap.registerPlugin(ScrollTrigger);
+// Mobile browsers resize the viewport as the address bar hides; do not rebuild the pin for that.
+ScrollTrigger.config({ ignoreMobileResize: true });
 
 export type JourneyMode = 'scroll' | 'step';
 
@@ -11,8 +13,9 @@ export type JourneyMode = 'scroll' | 'step';
  * One GSAP master timeline drives the whole journey: the shared `journey.pos` that the canvas reads
  * (node spread, edge geometry, camera, cluster focus) and the content panels' reveal.
  *
- *  · Desktop: the exhibition is pinned and the timeline is scrubbed by scroll (ScrollTrigger pin + scrub).
- *  · Touch / narrow screens and reduced motion: nothing is pinned; the arrows play the same timeline stop by stop.
+ *  · Normally (desktop and mobile): the exhibition is pinned and the timeline is scrubbed by scroll
+ *    (ScrollTrigger pin + scrub); the arrows simply scroll to the next stop.
+ *  · Reduced motion: nothing is pinned; the arrows jump the same timeline stop by stop.
  */
 export function useJourney(root: RefObject<HTMLElement | null>) {
   const [stop, setStop] = useState(0);
@@ -35,7 +38,8 @@ export function useJourney(root: RefObject<HTMLElement | null>) {
           ? {
               trigger: el,
               start: () => `top ${el.offsetTop}px`,
-              end: () => `+=${Math.round(window.innerHeight * 0.9 * EXIT)}`,
+              // phones get a shorter journey: fewer swipes per stop
+              end: () => `+=${Math.round(window.innerHeight * (window.innerWidth <= 1024 ? 0.62 : 0.9) * EXIT)}`,
               pin: true,
               scrub: 0.7,
               anticipatePin: 1,
@@ -58,8 +62,8 @@ export function useJourney(root: RefObject<HTMLElement | null>) {
         tl.fromTo(
           bits,
           { autoAlpha: 0, x: 26 },
-          { autoAlpha: 1, x: 0, duration: 0.22, stagger: 0.035, ease: 'power2.out' },
-          at - 0.3,
+          { autoAlpha: 1, x: 0, duration: 0.16, stagger: 0.02, ease: 'power2.out' },
+          at - 0.34,
         );
       });
       // the overview chrome steps aside as the journey begins, and everything clears on exit
@@ -93,7 +97,7 @@ export function useJourney(root: RefObject<HTMLElement | null>) {
       {
         // always true, so the journey is also built where it is not pinned (touch, narrow, reduced motion)
         any: '(min-width: 0px)',
-        pinned: '(min-width: 1025px) and (prefers-reduced-motion: no-preference)',
+        pinned: '(prefers-reduced-motion: no-preference)',
         reduced: '(prefers-reduced-motion: reduce)',
       },
       (ctx) => {

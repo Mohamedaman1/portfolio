@@ -97,10 +97,10 @@ labelled placeholder (portrait, signature) or leaves the block out.
 Scrolling the home page travels through the network. `src/lib/useJourney.ts` builds one GSAP master
 timeline that tweens a single value, `journey.pos` (0 = overview, 1–7 = hub stops, 8 = exit):
 
-- **Desktop:** the exhibition is pinned with ScrollTrigger (`pin` + `scrub`) and scroll scrubs the timeline,
-  forwards and backwards.
-- **Touch / narrow screens and reduced motion:** nothing is pinned; the large arrows under the network
-  play the same timeline stop by stop.
+- **Desktop and mobile:** the exhibition is pinned with ScrollTrigger (`pin` + `scrub`) and scroll scrubs
+  the timeline, forwards and backwards. Phones get a shorter scroll distance per stop; the arrows under the
+  network scroll to the next stop.
+- **Reduced motion:** nothing is pinned; the arrows jump the same timeline stop by stop.
 
 The canvas reads `journey.pos` every frame (`src/lib/journey.ts`, `NetworkCanvas.tsx`) and derives node
 spread, edge geometry, camera position and zoom, and which cluster is lit. The same timeline reveals the
@@ -115,6 +115,8 @@ camera back. Plain wheel always scrolls the page — zoom is pinch, Ctrl/⌘ + w
 - Side strip: the name runs as a vertical ticker and the signature writes itself in.
 - Signals travel along connections and nodes drift, so the network is never static.
 - Featured case studies are a snap carousel with arrow buttons, arrow keys and a counter.
+- Editorial chapters use scroll-scrubbed motion (`src/lib/useScrollFx.ts`): headlines rise word by word,
+  bands of outlined type slide sideways, gold sweeps across the `$2M+` figure, numerals and portrait drift.
 - A floating chapter rail shows `03 / 07` with `↑ ↓` arrows, plus a scroll-progress line.
 - Case-study pages have a sticky bar with Back and previous / next arrows.
 - Contact: pick a topic and the first WhatsApp message is typed for you (`contactTopics` in `portfolio.ts`).

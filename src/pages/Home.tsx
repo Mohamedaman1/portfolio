@@ -1,5 +1,8 @@
 import { useCallback, useRef, useState } from 'react';
 import { useJourney } from '../lib/useJourney';
+import { useScrollFx } from '../lib/useScrollFx';
+import ScrollBand from '../components/portfolio/ScrollBand';
+import Split from '../components/portfolio/Split';
 import { Link } from 'react-router-dom';
 import GrowthNetwork, { type GrowthNetworkHandle } from '../components/network/GrowthNetwork';
 import ChapterIndex from '../components/portfolio/ChapterIndex';
@@ -30,7 +33,9 @@ function ChapterHead({ id, title }: { id: string; title: string }) {
       <p className="micro rv">
         <span className="gold">{c.n}</span> / {c.label}
       </p>
-      <h2 className="rv rv--rise">{title}</h2>
+      <h2>
+        <Split text={title} />
+      </h2>
       <button type="button" className="micro chapter__back" onClick={() => window.scrollTo({ top: 0 })}>
         ↑ Network
       </button>
@@ -48,6 +53,8 @@ export default function Home({ introDone }: { introDone: boolean }) {
   const exhibit = useRef<HTMLDivElement>(null);
   const { stop, mode, goTo } = useJourney(exhibit);
   const activeHub = stop > 0 ? journeyStops[stop - 1].hub : null;
+  const editorial = useRef<HTMLDivElement>(null);
+  useScrollFx(editorial);
 
   const pick = useCallback(
     (hub: HubId) => {
@@ -85,6 +92,7 @@ export default function Home({ introDone }: { introDone: boolean }) {
         />
       </div>
       <ChapterRail />
+      <div ref={editorial}>
 
       <div className="marquee" aria-hidden="true">
         <div className="marquee__row">
@@ -135,9 +143,11 @@ export default function Home({ introDone }: { introDone: boolean }) {
         </Link>
       </section>
 
+      <ScrollBand rows={[['Stores', 'Media', 'Creative', 'Systems'], ['Salla', 'Zid', 'Shopify', 'WhatsApp']]} />
+
       <section className="chapter" id="impact">
         <ChapterHead id="impact" title="Impact, stated carefully." />
-        <div className="proof rv rv--rise">
+        <div className="proof">
           <p className="proof__figure">
             <CountUp value={headlineProof.value} prefix={headlineProof.prefix} suffix={headlineProof.suffix} />
           </p>
@@ -154,7 +164,7 @@ export default function Home({ introDone }: { introDone: boolean }) {
             <p className="micro">Spread across stores — shown as an illustration, not a per-brand breakdown</p>
           </div>
         </div>
-        <div className="facts rv">
+        <div className="facts">
           <div>
             <strong>{profile.experience}</strong>
             <span>in growth, media buying and marketing management</span>
@@ -178,7 +188,7 @@ export default function Home({ introDone }: { introDone: boolean }) {
             <span>internal concepts and architectures in development</span>
           </div>
         </div>
-        <div className="principles rv">
+        <div className="principles">
           <article>
             <h3>One system, not four departments</h3>
             <p>Acquisition, creative, storefront and follow-up are planned together, so each one makes the next easier.</p>
@@ -200,7 +210,7 @@ export default function Home({ introDone }: { introDone: boolean }) {
 
       <section className="chapter" id="expertise">
         <ChapterHead id="expertise" title="What the work is made of." />
-        <div className="columns rv">
+        <div className="columns">
           {expertise.map((e) => (
             <article key={e.title}>
               <h3>{e.title}</h3>
@@ -221,7 +231,7 @@ export default function Home({ introDone }: { introDone: boolean }) {
           Internal concepts and workflow architecture. Each is labelled for what it is: a concept, a prototype or a design still
           on paper. None of them is connected to this site.
         </p>
-        <ul className="rows rv">
+        <ul className="rows">
           {concepts.map((c) => (
             <li key={c.slug}>
               <Link to={`/work/${c.slug}`}>
@@ -245,12 +255,15 @@ export default function Home({ introDone }: { introDone: boolean }) {
         </Link>
       </section>
 
+      <ScrollBand rows={[['Say hello', 'Start here', 'One message']]} />
+
       <section className="chapter chapter--contact" id="contact">
         <ChapterHead id="contact" title={profile.contactLine} />
         <div className="rv">
           <ContactComposer compact />
         </div>
       </section>
+      </div>
     </>
   );
 }

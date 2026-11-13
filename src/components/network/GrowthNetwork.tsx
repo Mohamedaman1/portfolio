@@ -108,7 +108,7 @@ const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetw
       </button>
       <p className="micro" aria-live="polite">
         <span className="gold">{stop > 0 ? pad(stop) : '00'}</span> / {pad(total)}
-        <span className="stepper__label">{atStop ? atStop.label : 'Start the tour'}</span>
+        <span className="stepper__label">{atStop ? atStop.label : mode === 'scroll' ? 'Scroll to begin' : 'Start the tour'}</span>
       </p>
       <button
         type="button"
@@ -157,6 +157,11 @@ const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetw
           {stepper('stepper stepper--top')}
         </div>
 
+        <ol className="jdots" aria-hidden="true">
+          {journeyStops.map((s, i) => (
+            <li key={s.hub} className={i + 1 === stop ? 'is-on' : i + 1 < stop ? 'is-done' : undefined} />
+          ))}
+        </ol>
         <JourneyPanels stop={stop} />
         <NetworkInspector detail={detail} onSelect={selectAndFocus} />
 
@@ -199,12 +204,18 @@ const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetw
         <AccessibleNodeIndex open={listOpen || !canvasSupported} onClose={closeList} onSelect={selectAndFocus} />
       </div>
 
-      {/* Touch screens: large arrows are the way through the network. */}
+      {/* Small screens: where you are in the journey, with arrows as a second way to move. */}
       <div className="network__tour">
         {stepper('stepper stepper--tour')}
-        <a className="network__skip micro" href="#intro">
-          Skip to the page ↓
-        </a>
+        {stop === 0 && mode === 'scroll' ? (
+          <p className="network__hint micro">
+            <span className="network__hint-line" aria-hidden="true" /> Scroll to travel the network
+          </p>
+        ) : (
+          <a className="network__skip micro" href="#intro">
+            Skip to the page ↓
+          </a>
+        )}
       </div>
     </section>
   );
