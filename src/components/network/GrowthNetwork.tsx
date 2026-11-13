@@ -46,6 +46,7 @@ const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetw
   const canvasRef = useRef<NetworkHandle>(null);
   const [orientation, setOrientation] = useState<Orientation>('landscape');
   const [compact, setCompact] = useState(false);
+  const [stageWidth, setStageWidth] = useState(1200);
   const [listOpen, setListOpen] = useState(false);
   const reducedMotion = useReducedMotion();
   const canvasSupported = useMemo(
@@ -60,7 +61,9 @@ const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetw
       const { width, height } = entry.contentRect;
       if (width < 2 || height < 2) return;
       setOrientation(width / height < 0.95 ? 'portrait' : 'landscape');
-      setCompact(width < 720);
+      // phones and tablets: panels sit under the network instead of beside it
+      setCompact(width < 980);
+      setStageWidth(width);
     });
     ro.observe(el);
     return () => ro.disconnect();
@@ -140,7 +143,7 @@ const GrowthNetwork = forwardRef<GrowthNetworkHandle, Props>(function GrowthNetw
             insetRight={compact ? 0 : 340}
             insetBottom={compact ? 220 : 0}
             journeyRight={compact ? 0 : 430}
-            journeyBottom={compact ? 250 : 0}
+            journeyBottom={compact ? (stageWidth < 720 ? 250 : 330) : 0}
           />
         ) : (
           <p className="network__fallback">The interactive network needs Canvas support. Use the list below to browse the work.</p>

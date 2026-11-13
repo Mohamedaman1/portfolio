@@ -19,7 +19,8 @@ export function journeyPhase(pos: number) {
   const p = Math.min(EXIT, Math.max(0, pos));
   const seg = Math.min(STOPS, Math.floor(p));
   const raw = p - seg;
-  const f = smooth(Math.min(1, Math.max(0, (raw - 0.14) / 0.72)));
+  // Leaving the overview starts moving at once; between hubs there is a short rest at each stop.
+  const f = smooth(Math.min(1, Math.max(0, seg === 0 ? raw / 0.9 : (raw - 0.08) / 0.84)));
   return { seg, f, eased: seg + f };
 }
 

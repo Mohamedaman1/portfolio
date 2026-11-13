@@ -4,7 +4,7 @@ import Portrait from '../components/portfolio/Portrait';
 import Rich from '../components/portfolio/Rich';
 import Signature from '../components/portfolio/Signature';
 import { brands, headlineProof, hubs, profile, skills } from '../data/portfolio';
-import { candidUrl, illustrationUrl } from '../lib/portrait';
+import { candidUrl } from '../lib/portrait';
 
 const story = [
   {
@@ -154,16 +154,10 @@ export default function About() {
         ))}
       </section>
 
-      {(illustrationUrl || candidUrl) && (
+      {candidUrl && (
         <section className="about__block">
           <h2 className="about__h rv">Off the record</h2>
           <div className="sides">
-            {illustrationUrl && (
-              <figure className="rv">
-                <img src={illustrationUrl} alt="Illustrated portrait of Mohamed Aman in round sunglasses" loading="lazy" width="800" height="1096" />
-                <figcaption className="micro">The illustrated version</figcaption>
-              </figure>
-            )}
             {candidUrl && (
               <figure className="rv">
                 <img src={candidUrl} alt="Mohamed Aman in sunglasses, smiling and giving a thumbs up" loading="lazy" width="1000" height="1333" />

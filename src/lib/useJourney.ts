@@ -29,6 +29,7 @@ export function useJourney(root: RefObject<HTMLElement | null>) {
     const mm = gsap.matchMedia();
 
     const build = (scroll: boolean, instant: boolean) => {
+      const touch = window.matchMedia('(pointer: coarse)').matches;
       const panels = gsap.utils.toArray<HTMLElement>('.jpanel', el);
       const tl = gsap.timeline({
         paused: !scroll,
@@ -38,10 +39,14 @@ export function useJourney(root: RefObject<HTMLElement | null>) {
           ? {
               trigger: el,
               start: () => `top ${el.offsetTop}px`,
-              // phones get a shorter journey: fewer swipes per stop
-              end: () => `+=${Math.round(window.innerHeight * (window.innerWidth <= 1024 ? 0.62 : 0.9) * EXIT)}`,
+              // phones and tablets get a shorter journey: about one swipe per stop
+              end: () => `+=${Math.round(window.innerHeight * (window.innerWidth <= 1024 ? 0.5 : 0.9) * EXIT)}`,
               pin: true,
-              scrub: 0.7,
+              scrub: touch ? 0.35 : 0.7,
+              // on touch, a swipe settles on the nearest hub instead of stopping between two
+              snap: touch
+                ? { snapTo: 1 / EXIT, duration: { min: 0.25, max: 0.6 }, delay: 0.08, ease: 'power2.out', directional: true, inertia: false }
+                : undefined,
               anticipatePin: 1,
               invalidateOnRefresh: true,
             }

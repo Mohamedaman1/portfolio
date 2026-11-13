@@ -87,7 +87,8 @@ and it is disabled under `prefers-reduced-motion`.
 | `portrait.webp` | Intro and About portrait (4:5 crop of the studio photo) |
 | `portrait-intro.webp` | Tighter head-and-shoulders crop, shadows lifted, that the intro builds out of dots |
 | `signature.webp` | Handwritten signature, white ink on transparent (intro, Intro, About, footer) |
-| `illustration.webp`, `candid.webp` | "Off the record" strip on the About page |
+| `illustration.webp` | Contact page photo card and the chat avatar |
+| `candid.webp` | Contact page photo card and "Off the record" on the About page |
 
 Replace a file with the same name to swap it. If a file is removed, the site falls back to a
 labelled placeholder (portrait, signature) or leaves the block out.
@@ -101,6 +102,8 @@ timeline that tweens a single value, `journey.pos` (0 = overview, 1–7 = hub st
   the timeline, forwards and backwards. Phones get a shorter scroll distance per stop; the arrows under the
   network scroll to the next stop.
 - **Reduced motion:** nothing is pinned; the arrows jump the same timeline stop by stop.
+- **Touch devices:** a swipe settles on the nearest hub (snap), and panels sit under the network on
+  phones and tablets instead of beside it.
 
 The canvas reads `journey.pos` every frame (`src/lib/journey.ts`, `NetworkCanvas.tsx`) and derives node
 spread, edge geometry, camera position and zoom, and which cluster is lit. The same timeline reveals the
@@ -117,6 +120,10 @@ camera back. Plain wheel always scrolls the page — zoom is pinch, Ctrl/⌘ + w
 - Featured case studies are a snap carousel with arrow buttons, arrow keys and a counter.
 - Editorial chapters use scroll-scrubbed motion (`src/lib/useScrollFx.ts`): headlines rise word by word,
   bands of outlined type slide sideways, gold sweeps across the `$2M+` figure, numerals and portrait drift.
+- Long-form lines light up word by word (`Reading`), a gold rule draws across each chapter, groups tip
+  into place, case-study art opens like a shutter. These run on every page.
+- Desktop: a gold ring trails the pointer and cards lean toward it (`Cursor.tsx`); a gold sweep marks
+  each page change.
 - A floating chapter rail shows `03 / 07` with `↑ ↓` arrows, plus a scroll-progress line.
 - Case-study pages have a sticky bar with Back and previous / next arrows.
 - Contact: pick a topic and the first WhatsApp message is typed for you (`contactTopics` in `portfolio.ts`).

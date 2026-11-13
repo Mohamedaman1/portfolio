@@ -1,9 +1,9 @@
 import { useCallback, useRef, useState } from 'react';
 import { useJourney } from '../lib/useJourney';
-import { useScrollFx } from '../lib/useScrollFx';
 import ScrollBand from '../components/portfolio/ScrollBand';
 import Split from '../components/portfolio/Split';
 import Rich from '../components/portfolio/Rich';
+import Reading from '../components/portfolio/Reading';
 import { Link } from 'react-router-dom';
 import GrowthNetwork, { type GrowthNetworkHandle } from '../components/network/GrowthNetwork';
 import ChapterIndex from '../components/portfolio/ChapterIndex';
@@ -54,8 +54,7 @@ export default function Home({ introDone }: { introDone: boolean }) {
   const exhibit = useRef<HTMLDivElement>(null);
   const { stop, mode, goTo } = useJourney(exhibit);
   const activeHub = stop > 0 ? journeyStops[stop - 1].hub : null;
-  const editorial = useRef<HTMLDivElement>(null);
-  useScrollFx(editorial);
+
 
   const pick = useCallback(
     (hub: HubId) => {
@@ -93,7 +92,7 @@ export default function Home({ introDone }: { introDone: boolean }) {
         />
       </div>
       <ChapterRail />
-      <div ref={editorial}>
+      <div>
 
       <div className="marquee" aria-hidden="true">
         <div className="marquee__row">
@@ -253,11 +252,10 @@ export default function Home({ introDone }: { introDone: boolean }) {
 
       <section className="chapter" id="about">
         <ChapterHead id="about" title={profile.aboutAngle} />
-        <p className="lede lede--narrow">
-          <mark className="hl">Seven-plus years</mark> across Egypt, Saudi Arabia and the wider GCC — as strategist, marketing
-          manager and media buyer. The campaigns matter; so does everything a customer meets{' '}
-          <mark className="hl">before and after the click</mark>.
-        </p>
+        <Reading
+          className="lede"
+          text="Seven-plus years across Egypt, Saudi Arabia and the wider GCC — as strategist, marketing manager and media buyer. The campaigns matter; so does everything a customer meets before and after the click."
+        />
         <Link className="btn" to="/about">
           Read the full story <span aria-hidden="true">→</span>
         </Link>

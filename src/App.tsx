@@ -1,8 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Route, Routes, useLocation, useNavigationType } from 'react-router-dom';
 import IndexOverlay from './components/portfolio/IndexOverlay';
 import IntroOverlay from './components/portfolio/IntroOverlay';
 import { useScrollReveal } from './lib/useScrollReveal';
+import { useScrollFx } from './lib/useScrollFx';
+import Cursor from './components/portfolio/Cursor';
 import PortfolioHeader from './components/portfolio/PortfolioHeader';
 import SiteFooter from './components/portfolio/SiteFooter';
 import About from './pages/About';
@@ -43,6 +45,8 @@ export default function App() {
   const { pathname, hash } = useLocation();
   useEffect(() => setIndexOpen(false), [pathname, hash]);
   useScrollReveal(pathname);
+  const main = useRef<HTMLElement>(null);
+  useScrollFx(main, pathname);
 
   // The opening sequence plays once per browser session, on the home page only.
   const [intro, setIntro] = useState(() => {
@@ -75,7 +79,10 @@ export default function App() {
       <ScrollManager />
       <PortfolioHeader indexOpen={indexOpen} onToggleIndex={() => setIndexOpen((v) => !v)} />
       <IndexOverlay open={indexOpen} onClose={() => setIndexOpen(false)} />
-      <main id="main">
+      <Cursor />
+      {/* a gold sweep marks each page change */}
+      <div className="wipe" key={pathname} aria-hidden="true" />
+      <main id="main" ref={main}>
         <Routes>
           <Route path="/" element={<Home introDone={!intro} />} />
           <Route path="/work" element={<WorkIndex />} />
