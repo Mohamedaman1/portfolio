@@ -22,6 +22,17 @@ npm test           # unit tests: graph integrity, camera math, hit testing
 The site uses client-side routes (`/work`, `/work/:slug`, `/about`, `/contact`). When hosting the
 static `dist/` folder, configure the host to serve `index.html` for unknown paths.
 
+## Deployment — mohamedaman.pro
+
+`.github/workflows/deploy.yml` builds the site and publishes it to GitHub Pages on every push.
+`public/CNAME` binds it to `mohamedaman.pro`, and the workflow copies `index.html` to `404.html`
+so deep links such as `/work/dahsha` load the app.
+
+One-time setup: in the repository, **Settings → Pages → Source: GitHub Actions**, then set the
+custom domain to `mohamedaman.pro`. At the domain registrar add four `A` records for `@`
+(`185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`) and a `CNAME` for
+`www` pointing to `mohamedaman1.github.io`. Tick **Enforce HTTPS** once the certificate is issued.
+
 ## Where things live
 
 | What | File |
