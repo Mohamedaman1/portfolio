@@ -119,7 +119,6 @@ export default function WorkDetail() {
                 <li key={o}>{o}</li>
               ))}
             </ul>
-            <p className="micro delivered__note">Delivered work — not a measured result</p>
           </section>
         )}
         {p.results && p.results.length > 0 && (

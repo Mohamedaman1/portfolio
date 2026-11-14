@@ -140,8 +140,8 @@ documented or user-reported evidence is published:
   "Delivered work — not a measured result". Measured results go in `results`, only once approved.
 - **No client names or ad-account names appear anywhere** — not on the site, not in the code. Work is
   described by sector and market, with descriptive URLs.
-- **Numbers** are in `evidence` (Impact chapter) and in each case study's `results`, always with their
-  context and caveat (store totals are not ad-attributed revenue; conversations are leads, not sales).
+- **Numbers** can go in a project's `results` (shown as "In numbers" on its page), always with context.
+  The evidence wall was removed for now; it can return by adding a figures list back to `portfolio.ts`.
 - Kept out: ad spend, contract values, unconfirmed brand relationships, bridal and makeup work without
   approved samples, and backends or automations not confirmed live.
 

@@ -5,7 +5,6 @@ import Split from '../components/portfolio/Split';
 import Rich, { plain } from '../components/portfolio/Rich';
 import Reading from '../components/portfolio/Reading';
 import IndustryExplorer from '../components/portfolio/IndustryExplorer';
-import EvidenceWall from '../components/portfolio/EvidenceWall';
 import { Link } from 'react-router-dom';
 import GrowthNetwork, { type GrowthNetworkHandle } from '../components/network/GrowthNetwork';
 import ChapterIndex from '../components/portfolio/ChapterIndex';
@@ -199,7 +198,7 @@ export default function Home({ introDone }: { introDone: boolean }) {
         </div>
         <div className="outcomes">
           <p className="micro outcomes__label">
-            <span className="gold">What the work delivered</span> — described as work, not as measured results
+            <span className="gold">What the work delivered</span>
           </p>
           <ol className="principles">
             {deliveredOutcomes.map((o, i) => (
@@ -211,10 +210,6 @@ export default function Home({ introDone }: { introDone: boolean }) {
             ))}
           </ol>
         </div>
-        <EvidenceWall />
-        <p className="note rv">
-          Store sales are totals across the stores, not revenue attributed to ads. Conversations are leads, not sales.
-        </p>
       </section>
 
       <section className="chapter" id="expertise">
