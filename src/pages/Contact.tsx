@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import ContactComposer from '../components/portfolio/ContactComposer';
-import { contactLinks, profile } from '../data/portfolio';
+import { aboutCopy, contactLinks, profile } from '../data/portfolio';
 import { candidUrl, illustrationUrl } from '../lib/portrait';
 
 export default function Contact() {
@@ -35,6 +35,8 @@ export default function Contact() {
       </header>
 
       <ContactComposer />
+
+      <p className="lede lede--narrow contact__availability rv">{aboutCopy.availability}</p>
 
       <ol className="contact__steps">
         <li className="rv">

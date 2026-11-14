@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import type { Project } from '../../data/portfolio';
 import ProjectArt from './ProjectArt';
+import { plain } from './Rich';
 
 export default function ProjectCard({ project, n }: { project: Project; n?: string }) {
   return (
@@ -14,7 +15,7 @@ export default function ProjectCard({ project, n }: { project: Project; n?: stri
           <span>{project.status}</span>
         </span>
         <span className="card__title">{project.name}</span>
-        <span className="card__summary">{project.summary}</span>
+        <span className="card__summary">{plain(project.summary)}</span>
         <span className="micro card__meta">
           {project.market} · {project.sector}
         </span>

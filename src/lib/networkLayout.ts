@@ -252,7 +252,7 @@ export function buildGraph(orientation: Orientation): Graph {
     return { i, a };
   };
   for (let h = 0; h < hubCount; h++) {
-    const count = 12 + Math.floor(rng() * 5);
+    const count = 10 + Math.floor(rng() * 4);
     for (let s = 0; s < count; s++) {
       const { i, a } = satellite(h, 45, 275, rng() < 0.5 ? 0 : 1);
       if (rng() < 0.2) satellite(i, 22, 70, 0, a + (rng() - 0.5) * 1.3);

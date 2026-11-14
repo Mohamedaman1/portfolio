@@ -36,7 +36,7 @@ export const hubs: Hub[] = [
     id: 'creative',
     label: 'Creative Direction',
     summary:
-      'Campaign concepts, **visual direction** and **localized content** that give paid media something worth scaling.',
+      'Campaign concepts, **visual direction**, design and post-production, and **localized content** that give paid media something worth scaling.',
   },
   {
     id: 'healthcare',
@@ -48,7 +48,7 @@ export const hubs: Hub[] = [
     id: 'retail',
     label: 'Retail & Services',
     summary:
-      'Local Egyptian retail, **launch communication** and service businesses — acquisition grounded in **neighbourhood context**.',
+      'Egyptian retail, pharmacies, family services and restaurants — **launch communication**, content systems and acquisition grounded in **neighbourhood context**.',
   },
   {
     id: 'systems',
@@ -85,6 +85,11 @@ export const skills: Skill[] = [
   { id: 'local-targeting', label: 'Local Area Targeting', hubs: ['performance', 'healthcare'] },
   { id: 'reporting', label: 'Reporting', hubs: ['performance', 'systems'] },
   { id: 'ai-workflow', label: 'AI Workflow Design', hubs: ['systems'] },
+  { id: 'ugc', label: 'UGC & Short-form', hubs: ['creative', 'performance'] },
+  { id: 'catalog-ops', label: 'Catalog & Variants', hubs: ['ecommerce'] },
+  { id: 'measurement', label: 'Spend · Orders · VAT Reconciliation', hubs: ['performance', 'systems'] },
+  { id: 'sales-enablement', label: 'Sales Enablement', hubs: ['systems'] },
+  { id: 'mobile-ordering', label: 'Mobile Ordering UX', hubs: ['retail', 'ecommerce'] },
 ];
 
 export type Category = 'E-commerce' | 'Healthcare' | 'Retail & Services' | 'Systems & AI';
@@ -128,6 +133,11 @@ export interface Project {
   related?: string[];
   /** Order in the featured case-study list (stories only). */
   featured?: number;
+  /**
+   * What the work delivered or changed, stated as work (level 1), not as a measured result.
+   * Measured or commercial results go in `results`, and only once approved.
+   */
+  outcomes?: string[];
   /** Approved, publishable results. Leave empty until Mohamed signs off. */
   results?: string[];
 }
@@ -164,6 +174,7 @@ export const projects: Project[] = [
     ],
     skills: ['creative-strategy', 'storefront-ux', 'whatsapp-journey'],
     accent: '#3F74C4',
+    outcomes: ['Clearer conversion touchpoints between the ad, the product page and WhatsApp', 'A mobile hero and product journey reworked for phone shoppers'],
   },
   {
     slug: 'zezewigs',
@@ -193,6 +204,7 @@ export const projects: Project[] = [
     ],
     skills: ['creative-strategy', 'storefront-ux', 'seo-structure'],
     accent: '#E08DB0',
+    outcomes: ['A brand-specific creative direction, kept distinct from the other brands in the same category'],
   },
   {
     slug: 'prestige-wigs',
@@ -222,6 +234,7 @@ export const projects: Project[] = [
     ],
     skills: ['storefront-ux', 'reporting', 'creative-strategy'],
     accent: '#CDB592',
+    outcomes: ['A consistent reporting format across spend, orders and channels'],
   },
   {
     slug: 'rayah',
@@ -329,6 +342,7 @@ export const projects: Project[] = [
     deliverables: ['Ad campaigns', 'Sportswear creative and content', 'Visual merchandising direction'],
     skills: ['content-strategy', 'visual-merchandising'],
     accent: NEUTRAL,
+    outcomes: ['Product presentation in multiple colours and styles from the assets available'],
   },
   {
     slug: 'kareem-pharmacies',
@@ -351,6 +365,7 @@ export const projects: Project[] = [
     deliverables: ['Soft-opening visual direction', 'Launch creative', 'Content templates'],
     skills: ['brand-identity', 'content-strategy'],
     accent: NEUTRAL,
+    outcomes: ['A reusable template system for launches, restocks and Stories'],
   },
   {
     slug: 'seville',
@@ -423,6 +438,7 @@ export const projects: Project[] = [
     deliverables: ['Product concept', 'Workflow design', 'Prototype (ongoing)'],
     skills: ['ai-workflow'],
     accent: NEUTRAL,
+    outcomes: ['Seller assessment and training flows defined — prototype, not a released product'],
   },
   {
     slug: 'content-planner-pro',
@@ -495,6 +511,56 @@ export const projects: Project[] = [
     deliverables: ['Workflow architecture', 'Hand-off and reporting plan'],
     skills: ['whatsapp-journey', 'ai-workflow', 'reporting'],
     accent: NEUTRAL,
+    outcomes: ['A documented order → invoice → shipment workflow, ready to build and test — not an automation in production'],
+  },
+
+  {
+    slug: 'uae-fashion-footwear-store',
+    name: 'Fashion & Footwear Store',
+    alias: 'Fashion & footwear store · UAE',
+    kind: 'brand',
+    category: 'E-commerce',
+    hubs: ['ecommerce', 'performance'],
+    market: 'United Arab Emirates',
+    sector: 'Bags and women’s footwear',
+    role: 'Catalog and storefront UX direction, paid social planning',
+    status: 'Live professional engagement',
+    summary:
+      'Catalog structure, variants and **Quick Shop** for a UAE bags and footwear store on Shopify — so a large, size-heavy range stays **easy to browse and buy on a phone**.',
+    challenge: 'A catalog with many sizes, colours and categories can bury the product a shopper came for.',
+    approach: [
+      'Organise collections, products and variants so sizes and colours stay consistent.',
+      'Shape Quick Shop and mobile add-to-cart around the way people actually browse.',
+      'Plan paid social and traffic, with WhatsApp support for purchase questions.',
+    ],
+    deliverables: ['Collection and product structure', 'Variant and SKU consistency', 'Quick Shop and mobile cart UX', 'Paid social planning'],
+    skills: ['catalog-ops', 'storefront-ux', 'whatsapp-journey'],
+    accent: NEUTRAL,
+    outcomes: ['A collection and variant structure that keeps sizes and colours consistent across the range'],
+  },
+  {
+    slug: 'restaurant-ordering-ux',
+    name: 'Restaurant Ordering Experience',
+    alias: 'Restaurant ordering UX',
+    kind: 'brand',
+    category: 'Retail & Services',
+    hubs: ['retail', 'ecommerce'],
+    market: 'Egypt',
+    sector: 'Hospitality',
+    role: 'UX direction for an Arabic, mobile-first menu and ordering flow',
+    status: 'Case study',
+    summary:
+      'Turning a local restaurant menu into a **clearer mobile ordering experience** — Arabic, right-to-left, with correct prices and a short path from choosing to ordering.',
+    challenge: 'A menu that reads well on paper is hard to order from on a phone.',
+    approach: [
+      'Rework the menu as an Arabic, right-to-left, mobile-first layout.',
+      'Make prices and options unambiguous.',
+      'Shorten the path from choosing a dish to placing the order.',
+    ],
+    deliverables: ['Mobile menu and ordering UX', 'RTL layout direction', 'Ordering-flow definition'],
+    skills: ['mobile-ordering'],
+    accent: NEUTRAL,
+    outcomes: ['A mobile-first, right-to-left menu and ordering flow'],
   },
 
   /* ───────────── Featured case studies ───────────── */
@@ -601,23 +667,99 @@ export const projects: Project[] = [
     featured: 5,
   },
   {
-    slug: 'local-growth-human-context',
-    name: 'Local Growth, Human Context',
+    slug: 'local-relevance-better-conversations',
+    name: 'Local Relevance. Better Conversations.',
     kind: 'story',
     category: 'Healthcare',
-    hubs: ['healthcare', 'retail'],
+    hubs: ['healthcare'],
     market: 'Egypt',
-    sector: 'Healthcare and retail',
-    role: 'Local acquisition and content direction',
+    sector: 'Healthcare and physiotherapy',
+    role: 'Geo media planning, messaging and asset direction',
     status: 'Case study',
-    summary: 'Selected Egyptian healthcare and retail work, where proximity and plain language matter more than volume.',
-    challenge: 'Local businesses grow through the people around them.',
-    approach: ['Target by area, not by assumption.', 'Explain the service clearly; promise nothing that cannot be kept.'],
-    deliverables: ['Area-targeted campaigns', 'Video and content direction'],
-    skills: ['local-targeting', 'video-direction', 'content-strategy'],
+    summary:
+      'Physiotherapy and healthcare practices in Egypt: **relevant inquiries from the right area**, with clear explanation and responsible creative.',
+    challenge: 'Clinics need inquiries from people close enough to visit, without overpromising or sharing anything about patients.',
+    approach: [
+      'Choose catchment areas by branch and city.',
+      'Select doctor videos and service explanations that make the service understandable.',
+      'Set the campaign objective, budget and the follow-up path for each inquiry.',
+    ],
+    deliverables: ['Area-targeted media plans', 'Doctor-video campaign assets', 'Budget and follow-up path'],
+    skills: ['local-targeting', 'video-direction'],
     accent: '#8E8A82',
-    related: ['dr-hossam-hassan', 'dr-mohamed-sadaka', 'kareem-pharmacies', 'el-gannayni-sportswear'],
+    related: ['dr-hossam-hassan', 'dr-mohamed-sadaka', 'dr-amr-azzam'],
     featured: 6,
+    outcomes: ['Targeting plans by branch and city, with no patient data and no medical claims'],
+  },
+  {
+    slug: 'retail-creative-built-to-repeat',
+    name: 'Retail Creative Built to Repeat.',
+    kind: 'story',
+    category: 'Retail & Services',
+    hubs: ['retail', 'creative'],
+    market: 'Egypt',
+    sector: 'Pharmacy and sportswear retail',
+    role: 'Visual direction, campaign planning and templates',
+    status: 'Case study',
+    summary:
+      'Pharmacy and sportswear retail: **launches and promotions that stay on-brand** every time, with realistic product presentation.',
+    challenge: 'Retail runs on repeated launches and offers — each one has to look like the same brand.',
+    approach: [
+      'Build availability and restock templates the team can reuse.',
+      'Direct opening teasers and local brand voice.',
+      'Present apparel realistically on mannequins and models, in every colour.',
+      'Open short-form video with a hook built for the platform.',
+    ],
+    deliverables: ['Template system', 'Opening teasers', 'Apparel product visuals', 'Short-form hooks'],
+    skills: ['content-strategy', 'brand-identity', 'visual-merchandising'],
+    accent: '#8E8A82',
+    related: ['kareem-pharmacies', 'el-gannayni-sportswear'],
+    featured: 7,
+  },
+  {
+    slug: 'clarity-before-scale',
+    name: 'Clarity Before Scale.',
+    kind: 'story',
+    category: 'E-commerce',
+    hubs: ['performance', 'systems'],
+    market: 'Saudi Arabia / Egypt',
+    sector: 'Marketing analytics',
+    role: 'Measurement design, reconciliation and reporting',
+    status: 'Case study',
+    summary:
+      'Spend and orders spread across channels, currencies, sellers and VAT — made **readable enough to act on**.',
+    challenge: 'When orders come from ads, WhatsApp, the site and payment links, every channel reports a different truth.',
+    approach: [
+      'Define what counts as an order, a lead and a sale — and where each is recorded.',
+      'Separate WhatsApp, site and payment-link orders.',
+      'Reconcile currencies (EGP / SAR / AED / USD) and gross vs. net after VAT.',
+      'Review spend daily and monthly against what is left in each budget.',
+    ],
+    deliverables: ['Unified spend and orders report', 'Definitions sheet', 'VAT and currency logic'],
+    skills: ['measurement', 'reporting'],
+    accent: '#8E8A82',
+    related: ['prestige-wigs', 'dahsha', 'zezewigs'],
+    featured: 8,
+    outcomes: ['One reporting format for spend, orders and channels across brands'],
+  },
+  {
+    slug: 'from-catalog-complexity-to-clarity',
+    name: 'From Catalog Complexity to Clarity.',
+    kind: 'story',
+    category: 'E-commerce',
+    hubs: ['ecommerce'],
+    market: 'United Arab Emirates',
+    sector: 'Fashion e-commerce',
+    role: 'Catalog and UX operations direction',
+    status: 'Case study',
+    summary: 'A large bags and footwear range, organised so shoppers find **the right size and colour fast**.',
+    challenge: 'Big catalogs, many sizes and categories — and shopping still has to feel effortless.',
+    approach: ['Structure collections for footwear and handbags.', 'Keep variants consistent.', 'Add Quick Shop for faster buying on mobile.'],
+    deliverables: ['Collection structure', 'Variant rules', 'Quick Shop'],
+    skills: ['catalog-ops', 'storefront-ux'],
+    accent: '#8E8A82',
+    related: ['uae-fashion-footwear-store'],
+    featured: 9,
   },
 ];
 
@@ -686,26 +828,159 @@ export const headlineProof = {
 
 export const expertise = [
   {
-    title: 'E-commerce Growth',
-    body: 'Growing online stores **end to end** — the offer, the traffic, the storefront and the follow-up.',
-    items: ['Store growth strategy', 'Salla / Zid / Shopify UX', 'WhatsApp Journey', 'SEO URL Structure'],
+    title: 'Growth Strategy',
+    body: 'From the **business problem** to audience, funnel, channel plan and the KPIs that matter.',
+    items: ['Segmentation & positioning', 'Funnel design', 'Offers & value proposition', 'Budget & channel planning'],
   },
   {
     title: 'Performance Marketing',
-    body: 'Paid social planning and **media buying** for e-commerce and local services.',
-    items: ['Meta Ads', 'TikTok Ads', 'Snapchat Ads', 'Local Area Targeting', 'Reporting'],
+    body: 'Campaign structures that **connect spend to commercial decisions**.',
+    items: ['Meta Ads', 'TikTok Ads', 'Snapchat Ads', 'Creative testing', 'Geo & audience targeting'],
   },
   {
-    title: 'Creative Direction',
-    body: 'Campaign concepts and **visual standards** that fit the brand and the market.',
-    items: ['Creative Strategy', 'Brand Identity', 'Video Campaign Direction', 'Content Strategy'],
+    title: 'Creative & Production',
+    body: 'Visual storytelling shaped by **audience behaviour, product fidelity** and platform context.',
+    items: ['Art direction', 'UGC & short-form', 'Hooks & captions', 'Storyboards', 'AI-assisted visuals'],
   },
   {
-    title: 'Systems & Operations',
-    body: 'The **workflows around the campaign**: planning, hand-offs and reporting.',
-    items: ['AI Workflow Design', 'Sales workflow architecture', 'Reporting', 'Visual Merchandising'],
+    title: 'Commerce & UX',
+    body: 'Removing friction between **discovery, product confidence and purchase**.',
+    items: ['Salla · Zid · Shopify', 'Product pages', 'Catalog & variants', 'Mobile UX', 'WhatsApp CTAs'],
+  },
+  {
+    title: 'Analytics & Reporting',
+    body: 'Making performance **readable enough to act on** — across channels, currencies and sales sources.',
+    items: ['CPO · AOV · ROAS', 'Attribution gaps', 'VAT & currency', 'Excel / Google Sheets'],
+  },
+  {
+    title: 'CRM & Operations',
+    body: 'The processes and tools behind a **more consistent customer journey**.',
+    items: ['WhatsApp-first funnels', 'Respond.io · ManyChat', 'Zoho CRM fields', 'Seller scripts & scorecards'],
   },
 ];
+
+/** Industries first: the work grouped by sector, with brand names kept out of the headline. */
+export interface Industry {
+  id: string;
+  name: string;
+  market: string;
+  challenge: string;
+  work: string[];
+  /** Related case studies or work pages. */
+  links: string[];
+  note?: string;
+}
+
+export const industries: Industry[] = [
+  {
+    id: 'beauty',
+    name: 'Premium Beauty & Hair E-commerce',
+    market: 'Saudi Arabia · GCC',
+    challenge: 'A high-ticket category: buyers need trust, an accurate look at the product and a smooth path from ad to chat to checkout.',
+    work: ['Multi-platform paid acquisition', 'UGC and campaign direction', 'Product pages and WhatsApp conversion', 'Reporting across brands'],
+    links: ['three-brands-one-growth-discipline', 'from-storefront-to-conversion', 'culture-meets-conversion'],
+  },
+  {
+    id: 'fashion',
+    name: 'Fashion, Bags & Footwear',
+    market: 'United Arab Emirates',
+    challenge: 'A deep catalog of sizes, colours and categories that still has to be quick to browse and buy.',
+    work: ['Catalog and variant structure', 'Quick Shop and mobile cart', 'Paid social planning'],
+    links: ['from-catalog-complexity-to-clarity', 'rayah'],
+  },
+  {
+    id: 'sportswear',
+    name: 'Sportswear & Apparel Retail',
+    market: 'Egypt',
+    challenge: 'Showing colours and sizes attractively, and selling locally on the platforms people use.',
+    work: ['Apparel product visuals', 'Colour variants and retouching', 'TikTok hooks', 'Meta campaigns'],
+    links: ['retail-creative-built-to-repeat', 'el-gannayni-sportswear'],
+  },
+  {
+    id: 'healthcare',
+    name: 'Healthcare & Physiotherapy',
+    market: 'Egypt',
+    challenge: 'Inquiries from the right area, with responsible messaging and doctor videos people can understand.',
+    work: ['Area-targeted media plans', 'Doctor-video campaigns', 'Budget and follow-up path'],
+    links: ['local-relevance-better-conversations'],
+    note: 'No patient data, outcomes or medical claims.',
+  },
+  {
+    id: 'pharmacy',
+    name: 'Pharmacy & Neighbourhood Retail',
+    market: 'Egypt',
+    challenge: 'Building a trusted local presence before and after opening, with content that repeats well.',
+    work: ['Soft-opening direction', 'Launch and restock templates', 'Stories and local brand voice'],
+    links: ['kareem-pharmacies', 'retail-creative-built-to-repeat'],
+  },
+  {
+    id: 'family',
+    name: 'Family & Children’s Activities',
+    market: 'Egypt',
+    challenge: 'Convincing parents to book lessons for their children.',
+    work: ['Parent segmentation', 'Monthly content plan', 'Booking calls to action'],
+    links: ['elin-swimming-academy'],
+  },
+  {
+    id: 'hospitality',
+    name: 'Hospitality & Restaurant Ordering',
+    market: 'Egypt',
+    challenge: 'An Arabic menu that has to work as a phone-first ordering flow.',
+    work: ['RTL mobile menu', 'Ordering-flow UX'],
+    links: ['restaurant-ordering-ux'],
+  },
+  {
+    id: 'services',
+    name: 'Professional & Local Services',
+    market: 'Egypt',
+    challenge: 'Launching and explaining a local service, and turning attention into inquiries.',
+    work: ['Social launch plans', 'Content pillars and calendar', 'Visual direction'],
+    links: ['seville'],
+  },
+  {
+    id: 'internal',
+    name: 'Internal Tools & Operations',
+    market: 'Internal',
+    challenge: 'Training sellers, finding stock and moving an order from chat to invoice without re-typing.',
+    work: ['Sales Compass', 'Content Planner Pro', 'Order automation architecture'],
+    links: ['better-workflows-stronger-teams', 'a-smarter-sales-operation'],
+    note: 'Concepts and prototypes — labelled as such.',
+  },
+];
+
+/** What the work delivered, stated as work — not as measured results. */
+export const deliveredOutcomes = [
+  { title: 'Cross-brand reporting', body: 'Clearer reports for spend, orders, channels and VAT.' },
+  { title: 'Conversion-path clarity', body: 'Friction found between the ad, the product, WhatsApp and checkout.' },
+  { title: 'Brand-specific creative', body: 'Three brands in one category, each with its own identity and mood.' },
+  { title: 'Mobile-first storefronts', body: 'Hero and video sizing, clearer calls to action, product and coupon cards.' },
+  { title: 'Retail content variation', body: 'More product presentations and colourways from the assets available.' },
+  { title: 'Sales enablement', body: 'Assessments and support material for sales teams.' },
+];
+
+export const processSteps = [
+  { title: 'Diagnose', body: 'Find where the customer journey actually breaks — ad, page, chat or follow-up.' },
+  { title: 'Prioritize', body: 'Fix the step that limits everything after it first.' },
+  { title: 'Build', body: 'Campaigns, creative, pages and processes made for the market they serve.' },
+  { title: 'Measure', body: 'Agree what counts as a lead, an order and a sale — then report it plainly.' },
+  { title: 'Improve', body: 'Put budget and effort behind what has already proved itself.' },
+];
+
+/** Tools, grouped. Names only — no skill levels or percentages. */
+export const toolset = [
+  { group: 'Advertising & measurement', tools: ['Meta Ads Manager', 'TikTok Ads Manager', 'Snapchat Ads Manager', 'Excel', 'Google Sheets'] },
+  { group: 'Commerce & customer operations', tools: ['Shopify', 'Salla', 'Zid', 'WhatsApp Business', 'Respond.io', 'ManyChat', 'Zoho CRM', 'Zapier'] },
+  { group: 'Visual design & post-production', tools: ['Photoshop', 'Illustrator', 'InDesign', 'Canva', 'Premiere Pro', 'CapCut', 'DaVinci Resolve'] },
+  { group: 'Build & AI workflow', tools: ['Claude Code', 'ChatGPT', 'Lovable', 'HTML / CSS / JS', 'GitHub', 'Cloudflare', 'Netlify', 'FFmpeg'] },
+];
+
+export const aboutCopy = {
+  lede: 'I connect **acquisition, creative, commerce UX** and operational data to make growth decisions clearer and customer journeys stronger.',
+  belief:
+    'The strongest marketing is not the loudest campaign. It’s the clearest connection between an audience, an offer, a buying experience and the people who deliver it.',
+  availability:
+    'Working from Egypt with teams and businesses across Saudi Arabia, the GCC and selected local industries — for growth strategy, performance marketing, creative direction and commerce experience.',
+};
 
 /**
  * Verified contact links, supplied by Mohamed. Plain outbound links — nothing is integrated.
@@ -764,7 +1039,7 @@ export const journeyStops: JourneyStop[] = [
     hub: 'creative',
     fact: { value: '11/11', label: 'art campaign directed for a Saudi store' },
     headline: 'Creative worth scaling.',
-    points: ['Campaign concepts and art direction', 'Localized Saudi creative', 'Video campaign direction'],
+    points: ['Campaign concepts and art direction', 'UGC, hooks and short-form', 'Design and post-production'],
     cta: { label: 'Read the case studies', to: '/#work' },
   },
   {
@@ -778,7 +1053,7 @@ export const journeyStops: JourneyStop[] = [
     hub: 'retail',
     fact: { value: String(brands.filter((b) => b.hubs[0] === 'retail').length), label: 'local retail and service brands' },
     headline: 'Local growth, human context.',
-    points: ['Launch communication and templates', 'Content and visual merchandising', 'Neighbourhood-level acquisition'],
+    points: ['Pharmacy launches and templates', 'Sportswear content and visuals', 'Restaurant ordering and family services'],
     cta: { label: 'Browse retail work', to: '/work' },
   },
   {

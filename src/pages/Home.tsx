@@ -2,8 +2,9 @@ import { useCallback, useRef, useState } from 'react';
 import { useJourney } from '../lib/useJourney';
 import ScrollBand from '../components/portfolio/ScrollBand';
 import Split from '../components/portfolio/Split';
-import Rich from '../components/portfolio/Rich';
+import Rich, { plain } from '../components/portfolio/Rich';
 import Reading from '../components/portfolio/Reading';
+import IndustryExplorer from '../components/portfolio/IndustryExplorer';
 import { Link } from 'react-router-dom';
 import GrowthNetwork, { type GrowthNetworkHandle } from '../components/network/GrowthNetwork';
 import ChapterIndex from '../components/portfolio/ChapterIndex';
@@ -18,9 +19,11 @@ import {
   brands,
   chapters,
   concepts,
+  deliveredOutcomes,
   expertise,
   featuredStories,
   headlineProof,
+  industries,
   journeyStops,
   profile,
   type HubId,
@@ -181,6 +184,12 @@ export default function Home({ introDone }: { introDone: boolean }) {
           </div>
           <div>
             <strong>
+              <CountUp value={industries.length} />
+            </strong>
+            <span>industries — from premium beauty to healthcare and hospitality</span>
+          </div>
+          <div>
+            <strong>
               <CountUp value={markets} />
             </strong>
             <span>markets — Egypt, Saudi Arabia and the UAE</span>
@@ -192,19 +201,19 @@ export default function Home({ introDone }: { introDone: boolean }) {
             <span>internal concepts and architectures in development</span>
           </div>
         </div>
-        <div className="principles">
-          <article>
-            <h3>One system, not four departments</h3>
-            <p>Acquisition, creative, storefront and follow-up are planned together, so each one makes the next easier.</p>
-          </article>
-          <article>
-            <h3>Premium is a discipline</h3>
-            <p>In premium categories the standard of the visual and the calm of the buying journey are part of the result.</p>
-          </article>
-          <article>
-            <h3>Local means specific</h3>
-            <p>For clinics and neighbourhood retail, the right area and plain language matter more than reach.</p>
-          </article>
+        <div className="outcomes">
+          <p className="micro outcomes__label">
+            <span className="gold">What the work delivered</span> — described as work, not as measured results
+          </p>
+          <ol className="principles">
+            {deliveredOutcomes.map((o, i) => (
+              <li key={o.title}>
+                <span className="micro gold">{String(i + 1).padStart(2, '0')}</span>
+                <h3>{o.title}</h3>
+                <p>{o.body}</p>
+              </li>
+            ))}
+          </ol>
         </div>
         <p className="note rv">
           The sales figure is a combined total across stores and engagements. Per-brand figures, ROAS and ad-attributed revenue
@@ -213,7 +222,11 @@ export default function Home({ introDone }: { introDone: boolean }) {
       </section>
 
       <section className="chapter" id="expertise">
-        <ChapterHead id="expertise" title="What the work is made of." />
+        <ChapterHead id="expertise" title="Industries first. Then the work." />
+        <IndustryExplorer />
+        <p className="micro capabilities__label">
+          <span className="gold">Capabilities</span> — what runs across every industry
+        </p>
         <div className="columns">
           {expertise.map((e) => (
             <article key={e.title}>
@@ -242,7 +255,7 @@ export default function Home({ introDone }: { introDone: boolean }) {
             <li key={c.slug}>
               <Link to={`/work/${c.slug}`}>
                 <span className="rows__name">{c.name}</span>
-                <span className="rows__desc">{c.summary}</span>
+                <span className="rows__desc">{plain(c.summary)}</span>
                 <span className="status">{c.status}</span>
               </Link>
             </li>

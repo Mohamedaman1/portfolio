@@ -129,6 +129,19 @@ camera back. Plain wheel always scrolls the page — zoom is pinch, Ctrl/⌘ + w
 - Contact: pick a topic and the first WhatsApp message is typed for you (`contactTopics` in `portfolio.ts`).
 - All of it is switched off under the operating system's **Reduce motion** setting.
 
+## Content sources and what stays private
+
+Content comes from Mohamed's master content file (Nov 2026). Only category-level work backed by
+documented or user-reported evidence is published:
+
+- **Industries** (`industries`), **capabilities** (`expertise`), **process** (`processSteps`), **toolset**
+  (`toolset`, names only, no skill levels) and **About copy** (`aboutCopy`) live in `src/data/portfolio.ts`.
+- Each project can carry `outcomes`: delivered work, shown on its page as "What changed" with the label
+  "Delivered work — not a measured result". Measured results go in `results`, only once approved.
+- Kept out on purpose until verified: per-brand sales and orders, campaign spend and cost-per figures,
+  SKU counts, contract values, unconfirmed brand names (e.g. Royal Wigs, NovaStyle vs Rayah), bridal and
+  makeup work without approved samples, and backends or automations not confirmed live.
+
 ## Client names
 
 In the network, clients are labelled by field (`alias` on each project in `portfolio.ts`, e.g.

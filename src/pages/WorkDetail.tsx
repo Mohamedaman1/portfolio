@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import ProjectArt from '../components/portfolio/ProjectArt';
+import Rich from '../components/portfolio/Rich';
 import ProjectCard from '../components/portfolio/ProjectCard';
 import { hubById, projectBySlug, projects, skillById } from '../data/portfolio';
 import NotFound from './NotFound';
@@ -61,7 +62,9 @@ export default function WorkDetail() {
           </p>
           <h1>{p.name}</h1>
           <p className="status">{p.status}</p>
-          <p className="lede">{p.summary}</p>
+          <p className="lede">
+            <Rich text={p.summary} />
+          </p>
         </div>
         <div className="case__art">
           <ProjectArt project={p} label />
@@ -108,6 +111,17 @@ export default function WorkDetail() {
             ))}
           </ul>
         </section>
+        {p.outcomes && p.outcomes.length > 0 && (
+          <section>
+            <h2>What changed</h2>
+            <ul className="delivered">
+              {p.outcomes.map((o) => (
+                <li key={o}>{o}</li>
+              ))}
+            </ul>
+            <p className="micro delivered__note">Delivered work — not a measured result</p>
+          </section>
+        )}
         <section>
           <h2>Results</h2>
           {p.results?.length ? (

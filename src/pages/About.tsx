@@ -3,31 +3,26 @@ import CountUp from '../components/portfolio/CountUp';
 import Portrait from '../components/portfolio/Portrait';
 import Rich from '../components/portfolio/Rich';
 import Signature from '../components/portfolio/Signature';
-import { brands, headlineProof, hubs, profile, skills } from '../data/portfolio';
+import Reading from '../components/portfolio/Reading';
+import { aboutCopy, brands, headlineProof, industries, processSteps, profile, skills, toolset } from '../data/portfolio';
 import { candidUrl } from '../lib/portrait';
 
 const story = [
   {
-    title: 'It started with the ad.',
-    body: `Mohamed Aman has spent **${profile.experience}** in growth and marketing — planning strategy, managing marketing, **buying media** and directing creative.`,
+    title: 'Growth rarely breaks in one place.',
+    body: 'A campaign can attract the right audience, then lose them to **an unclear product page**, weak creative, **delayed follow-up** or reporting that mixes different kinds of orders. I work across those boundaries.',
   },
   {
-    title: 'Then the store behind it.',
-    body: 'Most of that work is **e-commerce**: online stores in Saudi Arabia and the wider GCC, where the click is only the first step and **the storefront decides the rest**.',
+    title: 'Across industries, not just brands.',
+    body: `${profile.experience} spanning **premium beauty e-commerce** in Saudi Arabia and the GCC, fashion and footwear, sportswear retail, **healthcare, pharmacies** and local services in Egypt — performance marketing combined with creative direction, commerce experience and **systems thinking**.`,
   },
   {
-    title: 'Then everything around it.',
-    body: 'A campaign is only as good as **the page it lands on**, the conversation that follows and the operation that fulfils the order — so those are **part of the brief** too.',
+    title: 'Prototypes are called prototypes.',
+    body: 'I also develop and direct internal concepts for sales training, content planning and order operations. Where something is still a prototype or architecture, I say so — **sound judgment and real evidence** over inflated claims.',
   },
 ];
 
-const process = [
-  { title: 'Map', body: 'Trace what a customer meets, from first impression to delivery.' },
-  { title: 'Fix', body: 'Repair the weakest step first — often the storefront, not the ad.' },
-  { title: 'Launch', body: 'Creative and media built for the market they speak to.' },
-  { title: 'Read', body: 'Report in a format someone can act on the same day.' },
-  { title: 'Scale', body: 'Put budget behind what has already proved itself.' },
-];
+const process = processSteps;
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
@@ -59,7 +54,7 @@ export default function About() {
         </div>
         <div className="about__story">
           <p className="lede rv">
-            <Rich text={profile.intro} />
+            <Rich text={aboutCopy.lede} />
           </p>
           {story.map((s, i) => (
             <article className="about__beat rv" key={s.title}>
@@ -107,6 +102,13 @@ export default function About() {
         </div>
       </section>
 
+      <section className="about__belief">
+        <p className="micro">
+          <span className="gold">What I believe</span>
+        </p>
+        <Reading className="about__quote" text={aboutCopy.belief} />
+      </section>
+
       <section className="about__block">
         <h2 className="about__h rv">How the work runs</h2>
         <ol className="process rv">
@@ -124,17 +126,15 @@ export default function About() {
       <section className="about__block">
         <h2 className="about__h rv">Where it has been applied</h2>
         <ul className="sectors">
-          {hubs
-            .filter((h) => h.id !== 'about')
-            .map((h, i) => (
-              <li className="rv" key={h.id}>
-                <span className="micro gold">{pad(i + 1)}</span>
-                <span className="sectors__name">{h.label}</span>
-                <span className="sectors__desc">
-                  <Rich text={h.summary} />
-                </span>
-              </li>
-            ))}
+          {industries.map((h, i) => (
+            <li className="rv" key={h.id}>
+              <span className="micro gold">{pad(i + 1)}</span>
+              <span className="sectors__name">{h.name}</span>
+              <span className="sectors__desc">
+                <span className="sectors__market">{h.market}</span> <Rich text={h.challenge} />
+              </span>
+            </li>
+          ))}
         </ul>
       </section>
 
@@ -152,6 +152,23 @@ export default function About() {
             </div>
           </div>
         ))}
+      </section>
+
+      <section className="about__block">
+        <h2 className="about__h rv">Toolset</h2>
+        <div className="toolset">
+          {toolset.map((g) => (
+            <div className="toolset__group rv" key={g.group}>
+              <p className="micro gold">{g.group}</p>
+              <ul>
+                {g.tools.map((tool) => (
+                  <li key={tool}>{tool}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <p className="note">Tools listed by name. Depth varies by project — from hands-on production to direction and review.</p>
       </section>
 
       {candidUrl && (

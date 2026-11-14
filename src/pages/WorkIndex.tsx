@@ -11,7 +11,7 @@ export default function WorkIndex() {
     return projects.filter(
       (p) =>
         (filter === 'All' || p.category === filter) &&
-        (!q || [p.name, p.summary, p.market, p.sector, p.role, p.status].join(' ').toLowerCase().includes(q)),
+        (!q || [p.name, p.alias ?? '', p.summary, p.market, p.sector, p.role, p.status].join(' ').toLowerCase().includes(q)),
     );
   }, [filter, query]);
 
