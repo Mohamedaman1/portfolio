@@ -147,9 +147,9 @@ const NEUTRAL = '#8E8A82';
 export const projects: Project[] = [
   /* ───────────── Premium e-commerce ───────────── */
   {
-    slug: 'dahsha',
+    slug: 'premium-hair-store-zid',
     alias: 'Premium wig store · Zid',
-    name: 'Dahsha',
+    name: 'Premium Hair Store',
     kind: 'brand',
     category: 'E-commerce',
     hubs: ['ecommerce', 'performance', 'creative'],
@@ -177,9 +177,9 @@ export const projects: Project[] = [
     outcomes: ['Clearer conversion touchpoints between the ad, the product page and WhatsApp', 'A mobile hero and product journey reworked for phone shoppers'],
   },
   {
-    slug: 'zezewigs',
+    slug: 'human-hair-wig-store',
     alias: 'Human-hair wig store · Salla',
-    name: 'ZezeWigs',
+    name: 'Human-Hair Wig Store',
     kind: 'brand',
     category: 'E-commerce',
     hubs: ['ecommerce', 'performance', 'creative'],
@@ -207,9 +207,9 @@ export const projects: Project[] = [
     outcomes: ['A brand-specific creative direction, kept distinct from the other brands in the same category'],
   },
   {
-    slug: 'prestige-wigs',
+    slug: 'luxury-wig-store',
     alias: 'Luxury wig store · Salla',
-    name: 'Prestige Wigs',
+    name: 'Luxury Wig Store',
     kind: 'brand',
     category: 'E-commerce',
     hubs: ['ecommerce', 'performance'],
@@ -237,9 +237,9 @@ export const projects: Project[] = [
     outcomes: ['A consistent reporting format across spend, orders and channels'],
   },
   {
-    slug: 'rayah',
+    slug: 'online-store-uae',
     alias: 'Online store · UAE',
-    name: 'Rayah',
+    name: 'Online Store, UAE',
     kind: 'brand',
     category: 'E-commerce',
     hubs: ['ecommerce', 'performance'],
@@ -260,9 +260,9 @@ export const projects: Project[] = [
 
   /* ───────────── Healthcare ───────────── */
   {
-    slug: 'dr-hossam-hassan',
+    slug: 'physiotherapy-clinic',
     alias: 'Physiotherapy clinic',
-    name: 'Dr Hossam Hassan',
+    name: 'Physiotherapy Clinic',
     kind: 'brand',
     category: 'Healthcare',
     hubs: ['healthcare', 'performance', 'creative'],
@@ -281,9 +281,9 @@ export const projects: Project[] = [
     accent: NEUTRAL,
   },
   {
-    slug: 'dr-mohamed-sadaka',
+    slug: 'shoulder-physio-practice',
     alias: 'Shoulder physio practice',
-    name: 'Dr Mohamed Sadaka',
+    name: 'Shoulder Physiotherapy Practice',
     kind: 'brand',
     category: 'Healthcare',
     hubs: ['healthcare', 'performance'],
@@ -302,9 +302,9 @@ export const projects: Project[] = [
     accent: NEUTRAL,
   },
   {
-    slug: 'dr-amr-azzam',
+    slug: 'healthcare-practice',
     alias: 'Healthcare practice',
-    name: 'Dr Amr Azzam',
+    name: 'Healthcare Practice',
     kind: 'brand',
     category: 'Healthcare',
     hubs: ['healthcare', 'performance'],
@@ -322,9 +322,9 @@ export const projects: Project[] = [
 
   /* ───────────── Retail & services ───────────── */
   {
-    slug: 'el-gannayni-sportswear',
+    slug: 'sportswear-retailer',
     alias: 'Sportswear retailer',
-    name: 'El-Gannayni Sportswear',
+    name: 'Sportswear Retailer',
     kind: 'brand',
     category: 'Retail & Services',
     hubs: ['retail', 'performance', 'creative'],
@@ -345,9 +345,9 @@ export const projects: Project[] = [
     outcomes: ['Product presentation in multiple colours and styles from the assets available'],
   },
   {
-    slug: 'kareem-pharmacies',
+    slug: 'pharmacy-launch',
     alias: 'Pharmacy launch',
-    name: 'Kareem Pharmacies',
+    name: 'Pharmacy Launch',
     kind: 'brand',
     category: 'Retail & Services',
     hubs: ['retail', 'creative'],
@@ -368,9 +368,9 @@ export const projects: Project[] = [
     outcomes: ['A reusable template system for launches, restocks and Stories'],
   },
   {
-    slug: 'seville',
+    slug: 'business-launch',
     alias: 'Business launch · Social',
-    name: 'Seville',
+    name: 'Social Business Launch',
     kind: 'brand',
     category: 'Retail & Services',
     hubs: ['retail', 'creative'],
@@ -386,9 +386,9 @@ export const projects: Project[] = [
     accent: NEUTRAL,
   },
   {
-    slug: 'elin-swimming-academy',
+    slug: 'swimming-academy',
     alias: 'Swimming academy',
-    name: 'Elin Swimming Academy',
+    name: 'Swimming Academy',
     kind: 'brand',
     category: 'Retail & Services',
     hubs: ['retail', 'performance'],
@@ -484,7 +484,7 @@ export const projects: Project[] = [
     sector: 'Marketing performance',
     role: 'Product concept',
     status: 'Concept',
-    summary: 'A concept for unified marketing performance management. In progress as an idea — it is not connected to this site or to any ad account.',
+    summary: 'A concept for unified marketing performance management. In progress as an idea.',
     challenge: 'See performance across channels in one consistent frame.',
     approach: ['Define what a unified performance view should answer.'],
     deliverables: ['Product concept (in progress)'],
@@ -574,7 +574,7 @@ export const projects: Project[] = [
     sector: 'Premium human-hair wigs',
     role: 'Growth and media lead across three brands',
     status: 'Case study',
-    summary: 'Dahsha, ZezeWigs and Prestige Wigs: one operating approach to premium Saudi multibrand growth and media.',
+    summary: 'Three premium hair stores in Saudi Arabia: **one operating approach** to multibrand growth and media.',
     challenge: 'Three premium brands in the same category need distinct voices and one consistent way of working.',
     approach: [
       'Keep each brand’s identity separate in creative and storefront.',
@@ -583,7 +583,8 @@ export const projects: Project[] = [
     deliverables: ['Multibrand media operating approach', 'Per-brand creative direction', 'Shared reporting rhythm'],
     skills: ['creative-strategy', 'reporting'],
     accent: '#B8A17A',
-    related: ['dahsha', 'zezewigs', 'prestige-wigs'],
+    results: ['SAR 290,879 in combined store sales across the three stores in one month (July 2026) — total store sales, not ad-attributed revenue', '160 orders in the same month, at an average order value of about SAR 1,818'],
+    related: ['premium-hair-store-zid', 'human-hair-wig-store', 'luxury-wig-store'],
     featured: 1,
   },
   {
@@ -596,7 +597,7 @@ export const projects: Project[] = [
     sector: 'Commerce UX',
     role: 'Storefront and conversion UX direction',
     status: 'Case study',
-    summary: 'Dahsha’s mobile experience on Zid: site, video and the WhatsApp journey designed as one path.',
+    summary: 'A premium hair store’s mobile experience on Zid: site, video and the **WhatsApp journey designed as one path**.',
     challenge: 'Most visitors arrive on a phone. The first screen has to carry the brand and point to the next step.',
     approach: [
       'Lead with a mobile hero that carries the brand.',
@@ -606,7 +607,7 @@ export const projects: Project[] = [
     deliverables: ['Mobile hero direction', 'Site and video journey', 'WhatsApp conversion path'],
     skills: ['storefront-ux', 'whatsapp-journey'],
     accent: '#3F74C4',
-    related: ['dahsha'],
+    related: ['premium-hair-store-zid'],
     featured: 2,
   },
   {
@@ -625,7 +626,8 @@ export const projects: Project[] = [
     deliverables: ['Localized campaign creative', 'Premium visual direction'],
     skills: ['creative-strategy', 'brand-identity'],
     accent: '#E08DB0',
-    related: ['dahsha', 'zezewigs', 'prestige-wigs'],
+    results: ['A Snapchat creative test: UGC drove twice the purchases of blogger creative (6 vs 3), while blogger creative cost less per order (about $127 vs $144) — a small test, read as direction', 'One messaging campaign opened 291 WhatsApp conversations in 11 days, at about $5.31 per conversation — conversations are leads, not sales'],
+    related: ['premium-hair-store-zid', 'human-hair-wig-store', 'luxury-wig-store'],
     featured: 3,
   },
   {
@@ -687,7 +689,7 @@ export const projects: Project[] = [
     deliverables: ['Area-targeted media plans', 'Doctor-video campaign assets', 'Budget and follow-up path'],
     skills: ['local-targeting', 'video-direction'],
     accent: '#8E8A82',
-    related: ['dr-hossam-hassan', 'dr-mohamed-sadaka', 'dr-amr-azzam'],
+    related: ['physiotherapy-clinic', 'shoulder-physio-practice', 'healthcare-practice'],
     featured: 6,
     outcomes: ['Targeting plans by branch and city, with no patient data and no medical claims'],
   },
@@ -713,7 +715,7 @@ export const projects: Project[] = [
     deliverables: ['Template system', 'Opening teasers', 'Apparel product visuals', 'Short-form hooks'],
     skills: ['content-strategy', 'brand-identity', 'visual-merchandising'],
     accent: '#8E8A82',
-    related: ['kareem-pharmacies', 'el-gannayni-sportswear'],
+    related: ['pharmacy-launch', 'sportswear-retailer'],
     featured: 7,
   },
   {
@@ -738,7 +740,7 @@ export const projects: Project[] = [
     deliverables: ['Unified spend and orders report', 'Definitions sheet', 'VAT and currency logic'],
     skills: ['measurement', 'reporting'],
     accent: '#8E8A82',
-    related: ['prestige-wigs', 'dahsha', 'zezewigs'],
+    related: ['luxury-wig-store', 'premium-hair-store-zid', 'human-hair-wig-store'],
     featured: 8,
     outcomes: ['One reporting format for spend, orders and channels across brands'],
   },
@@ -758,6 +760,7 @@ export const projects: Project[] = [
     deliverables: ['Collection structure', 'Variant rules', 'Quick Shop'],
     skills: ['catalog-ops', 'storefront-ux'],
     accent: '#8E8A82',
+    results: ['A catalog of 1,000+ SKUs organised into clear collections and variants', '191 products structured in a single footwear collection'],
     related: ['uae-fashion-footwear-store'],
     featured: 9,
   },
@@ -886,7 +889,7 @@ export const industries: Industry[] = [
     market: 'United Arab Emirates',
     challenge: 'A deep catalog of sizes, colours and categories that still has to be quick to browse and buy.',
     work: ['Catalog and variant structure', 'Quick Shop and mobile cart', 'Paid social planning'],
-    links: ['from-catalog-complexity-to-clarity', 'rayah'],
+    links: ['from-catalog-complexity-to-clarity', 'online-store-uae'],
   },
   {
     id: 'sportswear',
@@ -894,7 +897,7 @@ export const industries: Industry[] = [
     market: 'Egypt',
     challenge: 'Showing colours and sizes attractively, and selling locally on the platforms people use.',
     work: ['Apparel product visuals', 'Colour variants and retouching', 'TikTok hooks', 'Meta campaigns'],
-    links: ['retail-creative-built-to-repeat', 'el-gannayni-sportswear'],
+    links: ['retail-creative-built-to-repeat', 'sportswear-retailer'],
   },
   {
     id: 'healthcare',
@@ -911,7 +914,7 @@ export const industries: Industry[] = [
     market: 'Egypt',
     challenge: 'Building a trusted local presence before and after opening, with content that repeats well.',
     work: ['Soft-opening direction', 'Launch and restock templates', 'Stories and local brand voice'],
-    links: ['kareem-pharmacies', 'retail-creative-built-to-repeat'],
+    links: ['pharmacy-launch', 'retail-creative-built-to-repeat'],
   },
   {
     id: 'family',
@@ -919,7 +922,7 @@ export const industries: Industry[] = [
     market: 'Egypt',
     challenge: 'Convincing parents to book lessons for their children.',
     work: ['Parent segmentation', 'Monthly content plan', 'Booking calls to action'],
-    links: ['elin-swimming-academy'],
+    links: ['swimming-academy'],
   },
   {
     id: 'hospitality',
@@ -935,7 +938,7 @@ export const industries: Industry[] = [
     market: 'Egypt',
     challenge: 'Launching and explaining a local service, and turning attention into inquiries.',
     work: ['Social launch plans', 'Content pillars and calendar', 'Visual direction'],
-    links: ['seville'],
+    links: ['business-launch'],
   },
   {
     id: 'internal',
@@ -968,10 +971,10 @@ export const processSteps = [
 
 /** Tools, grouped. Names only — no skill levels or percentages. */
 export const toolset = [
+  { group: 'Visual design & post-production', tools: ['Photoshop', 'Illustrator', 'InDesign', 'Canva', 'Premiere Pro', 'CapCut', 'DaVinci Resolve'] },
+  { group: 'Code, build & AI', tools: ['HTML', 'CSS', 'JavaScript', 'GitHub', 'Cloudflare', 'Netlify', 'FFmpeg', 'Claude Code', 'ChatGPT', 'Lovable'] },
   { group: 'Advertising & measurement', tools: ['Meta Ads Manager', 'TikTok Ads Manager', 'Snapchat Ads Manager', 'Excel', 'Google Sheets'] },
   { group: 'Commerce & customer operations', tools: ['Shopify', 'Salla', 'Zid', 'WhatsApp Business', 'Respond.io', 'ManyChat', 'Zoho CRM', 'Zapier'] },
-  { group: 'Visual design & post-production', tools: ['Photoshop', 'Illustrator', 'InDesign', 'Canva', 'Premiere Pro', 'CapCut', 'DaVinci Resolve'] },
-  { group: 'Build & AI workflow', tools: ['Claude Code', 'ChatGPT', 'Lovable', 'HTML / CSS / JS', 'GitHub', 'Cloudflare', 'Netlify', 'FFmpeg'] },
 ];
 
 export const aboutCopy = {
@@ -991,19 +994,78 @@ export const contactLinks: { label: string; value: string; href: string }[] = [
 ];
 
 /**
- * UNPUBLISHED proof data. Not rendered anywhere while `approvedForPublication` is false.
- * These are total combined brand sales, NOT ad-attributed revenue.
+ * Evidence from the work, shared without client names. Each figure keeps its context and its caveat.
  */
-export const draftProof = {
-  approvedForPublication: false,
-  caveat: 'July 2026 historical snapshot. Combined brand sales, not paid-media-attributed revenue.',
-  brands: ['dahsha', 'zezewigs', 'prestige-wigs'],
-  figures: [
-    { label: 'Combined brand sales', value: 'SAR 290,879' },
-    { label: 'Total orders', value: '160' },
-    { label: 'Average order value', value: '≈ SAR 1,818' },
-  ],
-};
+export interface Evidence {
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  decimals?: number;
+  label: string;
+  context: string;
+  caveat?: string;
+  story?: string;
+}
+
+export const evidence: Evidence[] = [
+  {
+    value: 290879,
+    prefix: 'SAR ',
+    label: 'combined store sales in one month',
+    context: 'Three premium hair stores · KSA · July 2026',
+    caveat: 'Total store sales, not ad-attributed revenue',
+    story: 'three-brands-one-growth-discipline',
+  },
+  {
+    value: 160,
+    label: 'orders in that month',
+    context: 'Same three stores · high-ticket category',
+    story: 'three-brands-one-growth-discipline',
+  },
+  {
+    value: 1818,
+    prefix: 'SAR ',
+    label: 'average order value',
+    context: 'Where trust and product clarity carry the sale',
+    story: 'three-brands-one-growth-discipline',
+  },
+  {
+    value: 291,
+    label: 'WhatsApp conversations from one campaign',
+    context: 'Premium hair e-commerce · KSA · 11 days',
+    caveat: 'Conversations are leads, not sales',
+    story: 'culture-meets-conversion',
+  },
+  {
+    value: 5.31,
+    prefix: '$',
+    decimals: 2,
+    label: 'average cost per conversation',
+    context: 'Same messaging campaign',
+    story: 'culture-meets-conversion',
+  },
+  {
+    value: 2,
+    suffix: '×',
+    label: 'purchases from UGC vs. blogger creative',
+    context: 'Snapchat creative test · 6 vs 3 purchases',
+    caveat: 'Small test — bloggers cost less per order',
+    story: 'culture-meets-conversion',
+  },
+  {
+    value: 1000,
+    suffix: '+',
+    label: 'SKUs organised in one catalog',
+    context: 'Bags & footwear · UAE · Shopify',
+    story: 'from-catalog-complexity-to-clarity',
+  },
+  {
+    value: 191,
+    label: 'products in a single collection',
+    context: 'Women’s footwear · UAE',
+    story: 'from-catalog-complexity-to-clarity',
+  },
+];
 
 /**
  * The scroll journey through the network: one stop per hub, in this order.

@@ -39,10 +39,10 @@ export default function CountUp({ value, prefix = '', suffix = '', decimals = 0 
   }, [value]);
 
   return (
-    <span ref={ref} aria-label={`${prefix}${value}${suffix}`}>
+    <span ref={ref} aria-label={`${prefix}${value.toLocaleString('en-US')}${suffix}`}>
       <span aria-hidden="true">
         {prefix}
-        {shown.toFixed(decimals)}
+        {shown.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })}
         {suffix}
       </span>
     </span>

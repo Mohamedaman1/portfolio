@@ -67,7 +67,6 @@ export default function Contact() {
           </li>
         ))}
       </ul>
-      <p className="note">These are plain links. This portfolio has no contact form and sends nothing to any service.</p>
       <div className="page__cta">
         <Link className="btn" to="/work">
           See the work first <span aria-hidden="true">→</span>

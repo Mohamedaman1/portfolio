@@ -10,7 +10,7 @@ export default function SiteFooter() {
           {profile.name} — {profile.edition} / {profile.year}
         </p>
         <p className="micro footer__dim">Growth × Creative × Performance · {profile.markets}</p>
-        <p className="micro footer__dim">A standalone portfolio. No tracking, no external services.</p>
+        <p className="micro footer__dim">Based in Egypt · working with teams across KSA, the GCC and Egypt</p>
       </div>
       <nav className="footer__nav" aria-label="Footer">
         <Link to="/">↑ Back to the network</Link>

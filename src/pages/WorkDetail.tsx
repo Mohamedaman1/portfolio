@@ -67,7 +67,7 @@ export default function WorkDetail() {
           </p>
         </div>
         <div className="case__art">
-          <ProjectArt project={p} label />
+          <ProjectArt project={p} label={p.sector} />
         </div>
       </header>
 
@@ -122,18 +122,16 @@ export default function WorkDetail() {
             <p className="micro delivered__note">Delivered work — not a measured result</p>
           </section>
         )}
-        <section>
-          <h2>Results</h2>
-          {p.results?.length ? (
+        {p.results && p.results.length > 0 && (
+          <section className="case__results">
+            <h2>In numbers</h2>
             <ul>
               {p.results.map((r) => (
                 <li key={r}>{r}</li>
               ))}
             </ul>
-          ) : (
-            <p className="note">Results are not published in this edition. Figures appear here only once they are approved for release.</p>
-          )}
-        </section>
+          </section>
+        )}
         <section>
           <h2>Capabilities</h2>
           <ul className="tags">
@@ -144,14 +142,13 @@ export default function WorkDetail() {
         </section>
       </div>
 
-      <section className="case__gallery" aria-label="Media gallery">
-        <h2>Gallery</h2>
-        <p className="note">Media slots — approved campaign visuals and storefront captures will be placed here.</p>
+      <section className="case__gallery" aria-label="Deliverables">
+        <h2>Deliverables</h2>
         <div className="gallery">
-          {[0, 1, 2].map((n) => (
-            <figure key={n}>
-              <ProjectArt project={{ ...p, slug: `${p.slug}-${n}` }} label />
-              <figcaption className="micro">Slot {String(n + 1).padStart(2, '0')} · placeholder</figcaption>
+          {p.deliverables.slice(0, 3).map((d, n) => (
+            <figure key={d}>
+              <ProjectArt project={{ ...p, slug: `${p.slug}-${n}` }} label={`${String(n + 1).padStart(2, '0')} · ${d}`} />
+              <figcaption className="micro">{d}</figcaption>
             </figure>
           ))}
         </div>

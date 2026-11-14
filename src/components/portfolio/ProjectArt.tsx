@@ -7,12 +7,12 @@ function hash(s: string) {
 }
 
 /**
- * Original placeholder art for a project: a small seeded constellation in the brand's own colour.
- * It stands in for real campaign media and is never presented as a real ad.
+ * Original art for a project: a small seeded constellation in the brand's own colour.
+ * It is generated artwork, never presented as a real ad.
  */
 type ArtSource = { slug: string; name: string; accent: string };
 
-export default function ProjectArt({ project, label = false }: { project: ArtSource; label?: boolean }) {
+export default function ProjectArt({ project, label }: { project: ArtSource; label?: string }) {
   const rng = mulberry32(hash(project.slug));
   const cx = 110 + rng() * 180;
   const cy = 90 + rng() * 120;
@@ -31,7 +31,7 @@ export default function ProjectArt({ project, label = false }: { project: ArtSou
     .toUpperCase();
   const gid = `g-${project.slug}`;
   return (
-    <svg className="art" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label={`Placeholder artwork for ${project.name}`}>
+    <svg className="art" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice" role="img" aria-label={label ? `${project.name}: ${label}` : `Artwork for ${project.name}`}>
       <defs>
         <radialGradient id={gid} cx={cx / 400} cy={cy / 300} r="0.75">
           <stop offset="0" stopColor={project.accent} stopOpacity="0.5" />
@@ -57,7 +57,7 @@ export default function ProjectArt({ project, label = false }: { project: ArtSou
       <circle cx={cx} cy={cy} r="6" fill={project.accent} />
       {label && (
         <text x="14" y="24" className="art__label" fill="#a4a19c">
-          PLACEHOLDER · MEDIA SLOT
+          {label.toUpperCase()}
         </text>
       )}
     </svg>

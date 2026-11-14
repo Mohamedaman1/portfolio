@@ -3,6 +3,7 @@ import CountUp from '../components/portfolio/CountUp';
 import Portrait from '../components/portfolio/Portrait';
 import Rich from '../components/portfolio/Rich';
 import Signature from '../components/portfolio/Signature';
+import ToolIcon from '../components/portfolio/ToolIcon';
 import Reading from '../components/portfolio/Reading';
 import { aboutCopy, brands, headlineProof, industries, processSteps, profile, skills, toolset } from '../data/portfolio';
 import { candidUrl } from '../lib/portrait';
@@ -98,7 +99,7 @@ export default function About() {
           <strong>
             <CountUp value={brands.length} />
           </strong>
-          <span>brands and practices in this edition</span>
+          <span>brands and practices worked with</span>
         </div>
       </section>
 
@@ -160,15 +161,16 @@ export default function About() {
           {toolset.map((g) => (
             <div className="toolset__group rv" key={g.group}>
               <p className="micro gold">{g.group}</p>
-              <ul>
+              <ul className="tools">
                 {g.tools.map((tool) => (
-                  <li key={tool}>{tool}</li>
+                  <li key={tool}>
+                    <ToolIcon name={tool} />
+                  </li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
-        <p className="note">Tools listed by name. Depth varies by project — from hands-on production to direction and review.</p>
       </section>
 
       {candidUrl && (

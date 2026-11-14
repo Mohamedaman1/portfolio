@@ -5,6 +5,7 @@ import Split from '../components/portfolio/Split';
 import Rich, { plain } from '../components/portfolio/Rich';
 import Reading from '../components/portfolio/Reading';
 import IndustryExplorer from '../components/portfolio/IndustryExplorer';
+import EvidenceWall from '../components/portfolio/EvidenceWall';
 import { Link } from 'react-router-dom';
 import GrowthNetwork, { type GrowthNetworkHandle } from '../components/network/GrowthNetwork';
 import ChapterIndex from '../components/portfolio/ChapterIndex';
@@ -161,14 +162,9 @@ export default function Home({ introDone }: { introDone: boolean }) {
             <p className="proof__detail">
               <Rich text={headlineProof.detail} />
             </p>
-            <div className="proof__split" aria-hidden="true">
-              <i style={{ flex: 5 }} />
-              <i style={{ flex: 3 }} />
-              <i style={{ flex: 2 }} />
-              <i style={{ flex: 1.4 }} />
-              <i style={{ flex: 1 }} />
-            </div>
-            <p className="micro">Spread across stores — shown as an illustration, not a per-brand breakdown</p>
+            <Link className="btn btn--gold proof__cta" to="/work/three-brands-one-growth-discipline">
+              See the store case study <span aria-hidden="true">→</span>
+            </Link>
           </div>
         </div>
         <div className="facts">
@@ -180,7 +176,7 @@ export default function Home({ introDone }: { introDone: boolean }) {
             <strong>
               <CountUp value={brands.length} />
             </strong>
-            <span>brands and practices represented in this edition</span>
+            <span>brands and practices worked with</span>
           </div>
           <div>
             <strong>
@@ -215,9 +211,9 @@ export default function Home({ introDone }: { introDone: boolean }) {
             ))}
           </ol>
         </div>
+        <EvidenceWall />
         <p className="note rv">
-          The sales figure is a combined total across stores and engagements. Per-brand figures, ROAS and ad-attributed revenue
-          are not published in this edition.
+          Store sales are totals across the stores, not revenue attributed to ads. Conversations are leads, not sales.
         </p>
       </section>
 
@@ -248,7 +244,7 @@ export default function Home({ introDone }: { introDone: boolean }) {
         <ChapterHead id="systems" title="Systems & AI — ideas in progress." />
         <p className="lede lede--narrow">
           Internal concepts and workflow architecture. Each is labelled for what it is: a concept, a prototype or a design still
-          on paper. None of them is connected to this site.
+          on paper.
         </p>
         <ul className="rows">
           {concepts.map((c) => (

@@ -90,7 +90,7 @@ describe('hit test', () => {
   const sx = g.nodes.map((n) => n.x);
   const sy = g.nodes.map((n) => n.y);
   it('finds a named node under the pointer', () => {
-    const i = g.index.get(projectNodeId('dahsha'))!;
+    const i = g.index.get(projectNodeId('premium-hair-store-zid'))!;
     expect(hitTest(g.nodes, sx, sy, g.nodes[i].x + 3, g.nodes[i].y - 2)).toBe(i);
   });
   it('ignores decorative satellites and empty space', () => {

@@ -34,7 +34,7 @@ export default function WorkIndex() {
         </div>
         <label className="search">
           <span className="micro">Search</span>
-          <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Name, market, sector…" />
+          <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Sector, market, service…" />
         </label>
       </div>
       <p className="micro" aria-live="polite">

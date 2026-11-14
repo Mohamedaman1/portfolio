@@ -26,7 +26,7 @@ static `dist/` folder, configure the host to serve `index.html` for unknown path
 
 `.github/workflows/deploy.yml` builds the site and publishes it to GitHub Pages on every push.
 `public/CNAME` binds it to `mohamedaman.pro`, and the workflow copies `index.html` to `404.html`
-so deep links such as `/work/dahsha` load the app.
+so deep links such as `/work/premium-hair-store-zid` load the app.
 
 One-time setup: in the repository, **Settings → Pages → Source: GitHub Actions**, then set the
 custom domain to `mohamedaman.pro`. At the domain registrar add four `A` records for `@`
@@ -138,9 +138,12 @@ documented or user-reported evidence is published:
   (`toolset`, names only, no skill levels) and **About copy** (`aboutCopy`) live in `src/data/portfolio.ts`.
 - Each project can carry `outcomes`: delivered work, shown on its page as "What changed" with the label
   "Delivered work — not a measured result". Measured results go in `results`, only once approved.
-- Kept out on purpose until verified: per-brand sales and orders, campaign spend and cost-per figures,
-  SKU counts, contract values, unconfirmed brand names (e.g. Royal Wigs, NovaStyle vs Rayah), bridal and
-  makeup work without approved samples, and backends or automations not confirmed live.
+- **No client names or ad-account names appear anywhere** — not on the site, not in the code. Work is
+  described by sector and market, with descriptive URLs.
+- **Numbers** are in `evidence` (Impact chapter) and in each case study's `results`, always with their
+  context and caveat (store totals are not ad-attributed revenue; conversations are leads, not sales).
+- Kept out: ad spend, contract values, unconfirmed brand relationships, bridal and makeup work without
+  approved samples, and backends or automations not confirmed live.
 
 ## Client names
 
@@ -151,7 +154,7 @@ In the network, clients are labelled by field (`alias` on each project in `portf
 
 | Asset | Put it at | Then |
 | --- | --- | --- |
-| Dahsha / ZezeWigs / Prestige visuals | `public/media/<slug>/` | replace `ProjectArt` in the case-study hero and gallery |
+| Approved store and campaign visuals | `public/media/<slug>/` | replace `ProjectArt` in the case-study hero and gallery |
 | Other approved client art, clips | `public/media/projects/<slug>/` | same |
 
 Project art is clearly labelled placeholder artwork — none of it is presented as a real ad. Review public-use permission for each client name before publishing.

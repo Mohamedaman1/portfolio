@@ -88,7 +88,7 @@ export function useScrollFx(root: RefObject<HTMLElement | null>, key: string) {
             scrollTrigger: { trigger: group, start: 'top 86%', once: true },
           });
         });
-      rise('.principles, .facts, .rows, .case__meta, .case__body, .gallery, .contact__links, .industries__list, .toolset, .sectors');
+      rise('.principles, .facts, .rows, .case__meta, .case__body, .gallery, .contact__links, .industries__list, .toolset, .sectors, .evidence__grid, .tools');
       rise('.columns', { rotateX: -22, transformOrigin: '50% 0%', transformPerspective: 900 });
       rise('.carousel__track', { x: 90, y: 0, rotateY: -14, transformPerspective: 900, stagger: 0.12 });
       rise('.chapter > .cards, .case__related .cards', { scale: 0.92 });
