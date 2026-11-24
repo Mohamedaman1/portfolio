@@ -11,6 +11,7 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
+import Privacy from './pages/Privacy';
 import WorkDetail from './pages/WorkDetail';
 import WorkIndex from './pages/WorkIndex';
 
@@ -19,6 +20,7 @@ const TITLES: Record<string, string> = {
   '/work': 'Work — Mohamed Aman',
   '/about': 'About — Mohamed Aman',
   '/contact': 'Contact — Mohamed Aman',
+  '/privacy': 'Privacy policy — Mohamed Aman',
 };
 
 /** Scroll to the hash target, or to the top on new navigations. Back/forward keeps the browser's position. */
@@ -89,6 +91,7 @@ export default function App() {
           <Route path="/work/:slug" element={<WorkDetail />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

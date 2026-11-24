@@ -145,6 +145,11 @@ documented or user-reported evidence is published:
 - Kept out: ad spend, contract values, unconfirmed brand relationships, bridal and makeup work without
   approved samples, and backends or automations not confirmed live.
 
+## Privacy policy
+
+`/privacy` (`src/pages/Privacy.tsx`) describes what the site does and does not do. If you add analytics, a
+contact form, cookies or any third-party embed, update it first.
+
 ## Client names
 
 In the network, clients are labelled by field (`alias` on each project in `portfolio.ts`, e.g.

@@ -17,6 +17,7 @@ export default function SiteFooter() {
         <Link to="/work">Work</Link>
         <Link to="/about">About</Link>
         <Link to="/contact">Contact</Link>
+        <Link to="/privacy">Privacy</Link>
         {contactLinks.map((l) => (
           <a key={l.label} href={l.href} target="_blank" rel="noopener noreferrer">
             {l.label} ↗
