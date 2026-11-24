@@ -28,6 +28,10 @@ static `dist/` folder, configure the host to serve `index.html` for unknown path
 `public/CNAME` binds it to `mohamedaman.pro`, and the workflow copies `index.html` to `404.html`
 so deep links such as `/work/premium-hair-store-zid` load the app.
 
+`npm run build` also runs `scripts/prerender.ts`, which writes a real `index.html` for every route (so GitHub
+Pages answers 200, not 404, and crawlers that do not run JavaScript see the page). The privacy policy page also
+carries its full text in the HTML. Policy text lives in `src/data/privacy.ts`.
+
 One-time setup: in the repository, **Settings → Pages → Source: GitHub Actions**, then set the
 custom domain to `mohamedaman.pro`. At the domain registrar add four `A` records for `@`
 (`185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`) and a `CNAME` for
